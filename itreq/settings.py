@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import os
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -74,18 +76,26 @@ WSGI_APPLICATION = 'itreq.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'aaronmartdb',
+#         'USER': 'aaronmart',
+#         'PASSWORD': 'pass123',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+
+#     }
+# }
+
+# Parse the database URL
+
+database_url = os.environ.get('DATABASE_URL', 'postgres://uedlu0t14rdk4c:p4d79ee017999777f2cd065faa3be4aeffdc8d69909b4c1e30550bf4854ebc8ed@c3gtj1dt5vh48j.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/d3qckd1d7mng6t')
+
+# Update the DATABASES setting using dj_database_url
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'aaronmartdb',
-        'USER': 'aaronmart',
-        'PASSWORD': 'pass123',
-        'HOST': 'localhost',
-        'PORT': '5432',
-
-    }
+    'default': dj_database_url.config(default=database_url)
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators

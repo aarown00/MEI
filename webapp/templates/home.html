@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    .content-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 80vh; /* Make the content wrapper cover the full viewport height */
+    }
+
+    .content {
+        text-align: center;
+    }
+
+    .btn-learn-more {
+        background-image: linear-gradient(to right, #4e54c8, #8f94fb);
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        text-decoration: none;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-learn-more:hover {
+        background-image: linear-gradient(to right, #8f94fb, #4e54c8);
+    }
+</style>
+{% if user.is_authenticated %}
+
+<div class="content-wrapper">
+    <div class="content">
+        <h1 class="mt-4 mb-4">Welcome, {{ user.first_name }}!</h1>
+        <p class="lead">"Welcome back! Your login marks the start of swift and efficient IT support. Your requests will be addressed promptly to ensure seamless operations."</p>
+        <p class="lead">
+            <a href="createrequest" class="btn btn-lg btn-learn-more fw-bold">Get Started!</a>
+        </p>
+    </div>
+</div>
+
+{% else %}
+<script>
+    window.location.href = "{% url 'login' %}";
+</script>
+{% endif %}
+{% endblock %}

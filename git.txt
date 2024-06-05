@@ -1,0 +1,14 @@
+
+
+
+git config --global user.name "Aaron Gerald Martillano"
+git config --global user.email "aarown.00@gmail.com"
+git config --global push.default matching
+git config --global alias.co checkout
+git init
+
+git add .
+git commit -m "clean"
+git branch -M main
+git remote add origin https://github.com/aarown00/gerald-itreq.git
+git push -u origin main

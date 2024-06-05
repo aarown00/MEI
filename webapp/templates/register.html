@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+    /* Styles for the register card */
+    .register-card {
+        max-width: 450px;
+        margin: 0 auto;
+        margin-top: 100px;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        color: #333333;
+        background-color: #ffffff;
+        text-align: center;
+    }
+
+    /* Ensuring form controls within the register card have the correct styles */
+    .register-card .form-control {
+        background-color: #ffffff;
+        color: #333333;
+        border: 1px solid #ccc;
+        padding: 10px;
+        width: 100%;
+        box-sizing: border-box;
+        margin-bottom: 10px;
+        transition: background-color 0.3s, border-color 0.3s;
+    }
+
+    /* Focus and active states for form controls within the register card */
+    .register-card .form-control:focus,
+    .register-card .form-control:active {
+        background-color: #ffffff !important;
+        color: #333333 !important;
+        border-color: #333333;
+        outline: none;
+    }
+
+    /* Placeholder styling */
+    .register-card .form-control::placeholder {
+        color: #999999;
+    }
+
+    /* Button styling */
+    .btn-secondary {
+        background-color: #333333;
+        color: #ffffff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        width: 100%;
+    }
+
+    .btn-secondary:hover {
+        background-color: #555555;
+    }
+
+    /* Heading styling */
+    .register-card h1 {
+        color: #333333;
+        margin-bottom: 20px;
+    }
+</style>
+
+{% if form.errors %}
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+    <ul>
+        {% for field in form %}
+            {% for error in field.errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+            <li>{{ error }}</li>
+        {% endfor %}
+    </ul>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endif %}
+
+<div class="register-card">
+    <h1>Register</h1>
+
+    <form method="POST" action="">
+        {% csrf_token %}
+        
+        <div class="mb-3">
+            {{ form.username }}
+        </div>
+        <div class="mb-3">
+            {{ form.first_name }}
+        </div>
+        <div class="mb-3">
+            {{ form.last_name }}
+        </div>
+        <div class="mb-3">
+            {{ form.email }}
+        </div>
+        <div class="mb-3">
+            {{ form.password1 }}
+        </div>
+        <div class="mb-3">
+            {{ form.password2 }}
+        </div>
+        
+        <button type="submit" class="btn btn-secondary">Continue</button>
+    </form>
+</div>
+
+{% endblock %}

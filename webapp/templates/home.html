@@ -40,9 +40,9 @@
     </div>
 </div>
 
-{% else %}
+{% comment %} {% else %}
 <script>
     window.location.href = "{% url 'login' %}";
-</script>
+</script> {% endcomment %}
 {% endif %}
 {% endblock %}

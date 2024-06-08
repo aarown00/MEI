@@ -30,10 +30,17 @@
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         View
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="{% url 'viewrequest' username=request.user.username %}">View All Status</a></li>
+                    <ul class="dropdown-menu dropdown-menu-end navbar-dark bg-dark">
+                        <li><a class="dropdown-item text-light" href="{% url 'viewpending' username=request.user.username %}">Pending</a></li>
+                        <li><a class="dropdown-item text-light" href="{% url 'viewapproved' username=request.user.username %}">Approved</a></li>
+                        <li><a class="dropdown-item text-light" href="{% url 'viewcompleted' username=request.user.username %}">Completed</a></li>
                     </ul>
                 </li>
+                {% if user.is_authenticated and user.is_superuser %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'admin:index' %}">Admin</a>
+                </li>
+                {%endif%}
             </ul>
 
             <ul class="navbar-nav ms-auto">
@@ -41,18 +48,14 @@
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Account
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                    <ul class="dropdown-menu dropdown-menu-end navbar-dark bg-dark">
+                        <li><a class="dropdown-item text-light" href="{% url 'logout' %}">Logout</a></li>
                     </ul>
                 </li>
             </ul>
             {% endif %}
 
         </div>
-        {% if user.is_authenticated and user.is_superuser %}
-        <span class="navbar-text ms-auto">
-            <a href="{% url 'admin:index' %}" class="no-underline">Admin</a>
-        </span>
-        {%endif%}
+      
     </div>
 </nav>

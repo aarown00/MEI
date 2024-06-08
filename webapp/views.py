@@ -25,6 +25,11 @@ def home(request, username=None):
     
 
 def login_user(request):
+
+    if request.user.is_authenticated:
+       messages.error(request, "You are logged in. Please log out first.")
+       return redirect('home')
+
     if request.method == 'POST':
         username = request.POST.get('username')
         password = request.POST.get('password')
@@ -41,29 +46,38 @@ def login_user(request):
     
 
 def logout_user(request):
-    logout(request)
-    messages.success(request, "You Have Been Successfully Logged Out!")
-    return redirect('login')
+    if request.user.is_authenticated:
+        logout(request)
+        messages.success(request, "You Have Been Successfully Logged Out!")
+        return redirect('login')
+    else:
+        messages.error(request, "You are not logged in. Please log in first.")
+        return redirect('login')
 
 
 def register_user(request):
-	if request.method == 'POST':
-		form = RegisterForm(request.POST)
-		if form.is_valid():
-			form.save()
-			# Authenticate and login
-			#username = form.cleaned_data['username']
-			#password = form.cleaned_data['password1']
-			#user = authenticate(username=username, password=password)
-			#login(request, user)
-			messages.success(request, "You Have Successfully Registered! Please log in.")
-			return redirect('login')
+    
+    if request.user.is_authenticated:
+       messages.error(request, "You are logged in. Please log out first.")
+       return redirect('home')
+    
+    if request.method == 'POST':
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            form.save()
+            # Optionally, authenticate and login the user
+            # username = form.cleaned_data['username']
+            # password = form.cleaned_data['password1']
+            # user = authenticate(username=username, password=password)
+            # login(request, user)
+            messages.success(request, "You have successfully registered! Please log in.")
+            return redirect('login')
 		
-	else:
-		form = RegisterForm()
-		return render(request, 'register.html', {'form':form})
-
-	return render(request, 'register.html', {'form':form})
+    else:
+        form = RegisterForm()
+        return render(request, 'register.html', {'form':form})
+    
+    return render(request, 'register.html', {'form': form})
 
 
 def notices_user(request, username=None):
@@ -82,7 +96,7 @@ def createrequest_user(request, username=None):
     if request.user.is_authenticated:
         if request.user.username == username:
             if request.method == 'POST':
-                form = IT_RequestForm(request.POST)
+                form = IT_RequestForm(request.POST, request.FILES)
                 if form.is_valid():
                     it_request = form.save(commit=False)
                     it_request.user = request.user  # Set the user field
@@ -100,14 +114,44 @@ def createrequest_user(request, username=None):
         return redirect('login')
 	
 
-def viewrequest_user(request, username=None):
+def viewpending_user(request, username=None):
     if request.user.is_authenticated:
         if request.user.username == username:
             if request.user.is_superuser:
                 it_requests = IT_Request.objects.all()
             else:
                 it_requests = IT_Request.objects.filter(user=request.user)
-            return render(request, 'viewrequest.html', {'it_requests': it_requests})
+            return render(request, 'viewpending.html', {'it_requests': it_requests})
+        else:
+            return redirect('unauthorized')
+    else:
+        messages.error(request, "You must be logged in first!")
+        return redirect('login')
+    
+
+def viewapproved_user(request, username=None):
+    if request.user.is_authenticated:
+        if request.user.username == username:
+            if request.user.is_superuser:
+                it_requests = IT_Request.objects.all()
+            else:
+                it_requests = IT_Request.objects.filter(user=request.user)
+            return render(request, 'viewapproved.html', {'it_requests': it_requests})
+        else:
+            return redirect('unauthorized')
+    else:
+        messages.error(request, "You must be logged in first!")
+        return redirect('login')
+    
+
+def viewcompleted_user(request, username=None):
+    if request.user.is_authenticated:
+        if request.user.username == username:
+            if request.user.is_superuser:
+                it_requests = IT_Request.objects.all()
+            else:
+                it_requests = IT_Request.objects.filter(user=request.user)
+            return render(request, 'viewcompleted.html', {'it_requests': it_requests})
         else:
             return redirect('unauthorized')
     else:

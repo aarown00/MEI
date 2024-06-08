@@ -48,7 +48,7 @@ class IT_RequestForm(forms.ModelForm):
 
     class Meta:
         model = IT_Request
-        fields = ['department', 'eq_name', 'eq_type', 'issue', 'description']
+        fields = ['department', 'eq_name', 'eq_type', 'issue', 'description', 'upload']
 
     def __init__(self, *args, **kwargs):
         super(IT_RequestForm, self).__init__(*args, **kwargs)

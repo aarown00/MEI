@@ -14,6 +14,10 @@ urlpatterns = [
    path('<str:username>/', views.home, name='user_home'),
    path('<str:username>/notices/', views.notices_user, name='notices'),
    path('<str:username>/createrequest/', views.createrequest_user, name='createrequest'),
-   path('<str:username>/viewrequest/', views.viewrequest_user, name='viewrequest')
+   path('<str:username>/viewpending/', views.viewpending_user, name='viewpending'),
+   path('<str:username>/viewapproved/', views.viewapproved_user, name='viewapproved'),
+   path('<str:username>/viewcompleted/', views.viewcompleted_user, name='viewcompleted')
+
+
    
 ]

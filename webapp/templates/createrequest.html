@@ -1,12 +1,40 @@
 {% extends "base.html" %}
 
 {% block content %}
-
-    <h1>IT Request Form</h1>
-    <form method="POST">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Request</button>
-    </form>
-
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <h1 class="text-center">IT Request Form</h1>
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="id_department">Department:</label>
+                        {{ form.department }}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_eq_name">Equipment Name:</label>
+                        {{ form.eq_name }}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_eq_type">Equipment Type:</label>
+                        {{ form.eq_type }}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_issue">Issue:</label>
+                        {{ form.issue }}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_description">Description:</label>
+                        {{ form.description }}
+                    </div>
+                    <div class="form-group">
+                        <label for="id_image">Upload Image (Optional):</label></br>
+                        {{ form.upload }}
+                    </div>
+                    </br>
+                    <button type="submit" class="btn btn-primary">Request</button>
+                </form>
+            </div>
+        </div>
+    </div>
 {% endblock %}

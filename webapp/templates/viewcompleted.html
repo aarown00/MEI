@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+
+    .modal-body {
+        white-space: pre-wrap; /* Ensure long text in modal is wrapped */
+        word-wrap: break-word;
+    }
+   
+    .container-fluid {
+        padding: 0;
+    }
+    .card {
+        border: none;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .card-header {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #dee2e6;
+        font-weight: bold;
+    }
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .table th,
+    .table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #dee2e6;
+    }
+    .table th {
+        background-color: #f8f9fa;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+    .table tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+    .btn-link {
+        color: #007bff;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+
+
+</style>
+
+<div class="container-fluid px-4">
+    <h1 class="mt-4 mb-4">Dashboard</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item active">The data below reflects completed work requests.</li>
+    </ol>
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="fas fa-table me-1"></i>
+            Request Lists
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table id="it-request-table" class="hover" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>Requestor</th>
+                            <th>Equipment Name</th>
+                            <th>Equipment Type</th>
+                            <th>Issue</th>     
+                            <th>Requested At</th>
+                            <th>Attachment</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for it_request in it_requests %}
+                        {% if it_request.status == "Completed" %}
+                        <tr>
+                            <td data-label="Requestor"><button class="btn btn-link" onclick="showRequestorDetails('{{ it_request.user.first_name }} {{ it_request.user.last_name }}', '{{ it_request.user.email }}', '{{ it_request.user.username }}', '{{ it_request.department }}')">{{ it_request.user.first_name }} {{ it_request.user.last_name }}</button></td>
+                            <td data-label="Equipment Name">{{ it_request.eq_name }}</td>
+                            <td data-label="Equipment Type">{{ it_request.eq_type }}</td>
+                            <td data-label="Issue"><button class="btn btn-link" onclick="showDescription('{{ it_request.description|escapejs }}')">{{ it_request.issue }}</button></td>
+                            <td data-label="Requested At">{{ it_request.requested_at }}</td>
+                            <td data-label="Upload">
+                                {% if it_request.upload %}
+                                    <a href="{{ it_request.upload.url }}" class="no-underline">View</a>
+                                {% else %}
+                                    None
+                                {% endif %}
+                            <td data-label="Status">
+                                <button type="button" class="btn btn-success">Completed</button>
+                            </td>
+                        </tr>
+                        {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Description Modal -->
+<div class="modal fade" id="descriptionModal" tabindex="-1" aria-labelledby="descriptionModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="descriptionModalLabel">Description</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="descriptionModalBody">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Requestor Details Modal -->
+<div class="modal fade" id="requestorModal" tabindex="-1" aria-labelledby="requestorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="requestorModalLabel">Requestor Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" id="requestorModalBody">
+                <dl class="row">
+                    <dt class="col-sm-4">Full Name:</dt>
+                    <dd class="col-sm-8" id="requestorFullName"></dd>
+
+                    <dt class="col-sm-4">Email:</dt>
+                    <dd class="col-sm-8" id="requestorEmail"></dd>
+
+                    <dt class="col-sm-4">Employee ID:</dt>
+                    <dd class="col-sm-8" id="requestorEmployeeId"></dd>
+
+                    <dt class="col-sm-4">Department:</dt>
+                    <dd class="col-sm-8" id="requestorDepartment"></dd>
+                </dl>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

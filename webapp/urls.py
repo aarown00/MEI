@@ -16,7 +16,10 @@ urlpatterns = [
    path('<str:username>/createrequest/', views.createrequest_user, name='createrequest'),
    path('<str:username>/viewpending/', views.viewpending_user, name='viewpending'),
    path('<str:username>/viewapproved/', views.viewapproved_user, name='viewapproved'),
-   path('<str:username>/viewcompleted/', views.viewcompleted_user, name='viewcompleted')
+   path('<str:username>/viewcompleted/', views.viewcompleted_user, name='viewcompleted'),
+
+   #media route
+   path("media/user_uploads/<str:file>",views.secureFile, name="securefileupload")
 
 
    

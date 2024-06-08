@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 
+
+
 {% block content %}
     <div class="container">
         <div class="row">
@@ -28,9 +30,16 @@
                         {{ form.description }}
                     </div>
                     <div class="form-group">
-                        <label for="id_image">Upload Image (Optional):</label></br>
+                        <label for="id_upload">Attachment (Optional):</label> 
+                        <p class="fw-semibold fs-6">Please upload PNG or JPG files for single attachments. If multiple files are required, please compile and upload them in PDF format.</p>
                         {{ form.upload }}
+                       
                     </div>
+
+                    
+                    
+                    
+                 
                     </br>
                     <button type="submit" class="btn btn-primary">Request</button>
                 </form>

@@ -2,6 +2,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django import forms
 from .models import IT_Request
+from django.forms import ClearableFileInput
 
 #Registration
 class RegisterForm(UserCreationForm):
@@ -81,4 +82,8 @@ class IT_RequestForm(forms.ModelForm):
         self.fields['description'].widget.attrs.update({
             'placeholder': 'Description',
             'class': 'form-control'
+        })
+
+        self.fields['upload'].widget = ClearableFileInput(attrs={
+            'class': 'form-control',  
         })

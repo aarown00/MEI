@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.validators import FileExtensionValidator
 
 
 class IT_Request(models.Model):
@@ -21,7 +22,7 @@ class IT_Request(models.Model):
     issue = models.CharField(max_length=100, choices=ISSUE_CHOICES)
     description = models.TextField()
     status = models.CharField(max_length=100, choices=STATUS_CHOICES, default='Pending')
-    upload = models.ImageField(null=True, blank=True, upload_to="user_uploads/")
+    upload = models.FileField(null=True, blank=True, upload_to="user_uploads/", validators=[FileExtensionValidator(allowed_extensions=['pdf', 'jpg', 'jpeg', 'png'])])
     #Foreign Model
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 

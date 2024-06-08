@@ -1,17 +1,31 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from .forms import RegisterForm, IT_RequestForm
 from. models import IT_Request
+from django.http import FileResponse
+import os
 
 def unauthorized_user(request):
     return render(request, 'unauthorized.html')
 
 
+def secureFile(request, file):
+    
+    document = get_object_or_404(IT_Request,upload="user_uploads/"+file)
+    path,file_name=os.path.split(file)
 
-
-
-
+    response = FileResponse(document.upload)
+    if request.user.is_authenticated:
+        if request.user == document.user or request.user.is_superuser:
+            return response
+        else:
+            return redirect('unauthorized')
+    else:
+        messages.error(request, "You must be logged in first!")
+        return redirect('login')
+    
+ 
 
 def home(request, username=None):
     if request.user.is_authenticated:

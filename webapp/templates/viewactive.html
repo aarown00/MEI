@@ -44,20 +44,15 @@
         text-decoration: none;
         cursor: pointer;
     }
-    .no-underline {
-        color: #007bff;
-        text-decoration: none;
-        cursor: pointer;
-    }
 
 
 
 </style>
 
 <div class="container-fluid px-4">
-    <h1 class="mt-4 mb-4">Dashboard</h1>
+    <h1 class="mt-4 mb-4">Active Requests</h1>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item active">The data below reflects requested work requests.</li>
+        <li class="breadcrumb-item active">The data below reflects in progress work requests.</li>
     </ol>
     <div class="card mb-4">
         <div class="card-header">
@@ -74,13 +69,13 @@
                             <th>Equipment Type</th>
                             <th>Issue</th>     
                             <th>Requested At</th>
-                            <th>Attachment</th>
+                            <th>Attachment
                             <th>Status</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for it_request in it_requests %}
-                        {% if it_request.status == "Pending" %}
+                        {% if it_request.status == "Active" %}
                         <tr>
                             <td data-label="Requestor"><button class="btn btn-link" onclick="showRequestorDetails('{{ it_request.user.first_name }} {{ it_request.user.last_name }}', '{{ it_request.user.email }}', '{{ it_request.user.username }}', '{{ it_request.department }}')">{{ it_request.user.first_name }} {{ it_request.user.last_name }}</button></td>
                             <td data-label="Equipment Name">{{ it_request.eq_name }}</td>
@@ -94,7 +89,7 @@
                                     None
                                 {% endif %}
                             <td data-label="Status">
-                                <button type="button" class="btn btn-warning">Pending</button>
+                                    <button type="button" class="btn btn-success">Active</button>
                             </td>
                         </tr>
                         {% endif %}

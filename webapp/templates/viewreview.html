@@ -44,15 +44,20 @@
         text-decoration: none;
         cursor: pointer;
     }
+    .no-underline {
+        color: #007bff;
+        text-decoration: none;
+        cursor: pointer;
+    }
 
 
 
 </style>
 
 <div class="container-fluid px-4">
-    <h1 class="mt-4 mb-4">Dashboard</h1>
+    <h1 class="mt-4 mb-4">In Review</h1>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item active">The data below reflects in progress work requests.</li>
+        <li class="breadcrumb-item active">The data below reflects requested work requests. Please wait for the Admin to approve your requests.</li>
     </ol>
     <div class="card mb-4">
         <div class="card-header">
@@ -69,13 +74,13 @@
                             <th>Equipment Type</th>
                             <th>Issue</th>     
                             <th>Requested At</th>
-                            <th>Attachment
+                            <th>Attachment</th>
                             <th>Status</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for it_request in it_requests %}
-                        {% if it_request.status == "Approved" or it_request.status == "In Progress" %}
+                        {% if it_request.status == "Waiting" %}
                         <tr>
                             <td data-label="Requestor"><button class="btn btn-link" onclick="showRequestorDetails('{{ it_request.user.first_name }} {{ it_request.user.last_name }}', '{{ it_request.user.email }}', '{{ it_request.user.username }}', '{{ it_request.department }}')">{{ it_request.user.first_name }} {{ it_request.user.last_name }}</button></td>
                             <td data-label="Equipment Name">{{ it_request.eq_name }}</td>
@@ -89,11 +94,7 @@
                                     None
                                 {% endif %}
                             <td data-label="Status">
-                                {% if it_request.status == "Approved" %}
-                                    <button type="button" class="btn btn-secondary">Approved</button>
-                                {% elif it_request.status == "In Progress" %}
-                                    <button type="button" class="btn btn-primary">In Progress</button>
-                                {% endif %}
+                                <button type="button" class="btn btn-secondary">Waiting</button>
                             </td>
                         </tr>
                         {% endif %}

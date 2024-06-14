@@ -50,9 +50,9 @@
 </style>
 
 <div class="container-fluid px-4">
-    <h1 class="mt-4 mb-4">Dashboard</h1>
+    <h1 class="mt-4 mb-4">History</h1>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item active">The data below reflects completed work requests.</li>
+        <li class="breadcrumb-item active">The data below reflects history of work requests.</li>
     </ol>
     <div class="card mb-4">
         <div class="card-header">
@@ -75,7 +75,7 @@
                     </thead>
                     <tbody>
                         {% for it_request in it_requests %}
-                        {% if it_request.status == "Completed" %}
+                        {% if it_request.status == "Completed" or it_request.status == "Cancelled" %}
                         <tr>
                             <td data-label="Requestor"><button class="btn btn-link" onclick="showRequestorDetails('{{ it_request.user.first_name }} {{ it_request.user.last_name }}', '{{ it_request.user.email }}', '{{ it_request.user.username }}', '{{ it_request.department }}')">{{ it_request.user.first_name }} {{ it_request.user.last_name }}</button></td>
                             <td data-label="Equipment Name">{{ it_request.eq_name }}</td>
@@ -89,7 +89,11 @@
                                     None
                                 {% endif %}
                             <td data-label="Status">
-                                <button type="button" class="btn btn-success">Completed</button>
+                                {% if it_request.status == "Completed" %}
+                                    <button type="button" class="btn btn-primary">Completed</button>
+                                {% elif it_request.status == "Cancelled" %}
+                                    <button type="button" class="btn btn-danger">Cancelled</button>
+                                {% endif %}
                             </td>
                         </tr>
                         {% endif %}

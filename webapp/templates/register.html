@@ -61,6 +61,18 @@
         color: #333333;
         margin-bottom: 20px;
     }
+
+    .register-card .signup-link {
+        margin-top: 15px;
+        display: block;
+        color: #333333;
+        text-decoration: underline;
+        font-size: 14px;
+    }
+
+    .register-card .signup-link:hover {
+        text-decoration: underline;
+    }
 </style>
 
 {% if form.errors %}
@@ -106,6 +118,7 @@
         
         <button type="submit" class="btn btn-secondary">Continue</button>
     </form>
+    <a href="{% url 'login' %}" class="signup-link">Existing Employee? Login Here.</a>
 </div>
 
 {% endblock %}

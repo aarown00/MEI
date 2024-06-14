@@ -12,16 +12,17 @@ class IT_Request(models.Model):
     EQ_TYPE_CHOICES = generate_choices('Desktop', 'Laptop', 'Printer', 'Network Devices', 'Peripherals')
     ISSUE_CHOICES = generate_choices('Account Creation/Deletion', 'Password Reset/Unlock', 'Server Access', 'Application Installation', 'Troubleshoot', 
                                      'Security Incident Report', 'Data Backup/Recovery', 'Hardware Installation', 'Network' )
-    STATUS_CHOICES = generate_choices('Pending', 'Approved', 'In Progress', 'Completed')
+    STATUS_CHOICES = generate_choices('Waiting', 'Active', 'Completed', 'Cancelled')
+    DEP_CHOICES = generate_choices('Human Resources (HR)', 'Finance/Accounting', 'Information Technology (IT)', 'Marketing/Sales', 'Operations', 'Engineering')
 
     # Model fields
     eq_name = models.CharField(max_length=100)
     eq_type = models.CharField(max_length=100, choices=EQ_TYPE_CHOICES)
-    department = models.CharField(max_length=100)
+    department = models.CharField(max_length=100, choices=DEP_CHOICES)
     requested_at = models.DateTimeField(auto_now_add=True)
     issue = models.CharField(max_length=100, choices=ISSUE_CHOICES)
     description = models.TextField()
-    status = models.CharField(max_length=100, choices=STATUS_CHOICES, default='Pending')
+    status = models.CharField(max_length=100, choices=STATUS_CHOICES, default='Waiting')
     upload = models.FileField(null=True, blank=True, upload_to="user_uploads/", validators=[FileExtensionValidator(allowed_extensions=['pdf', 'jpg', 'jpeg', 'png'])])
     #Foreign Model
     user = models.ForeignKey(User, on_delete=models.CASCADE)

@@ -3,37 +3,35 @@
     .no-underline {
         text-decoration: none;
     }
+
+    .dropdown-menu .dropdown-item:hover {
+        background-color: #007bff; /* Set your desired hover background color */
+        color: #ffffff; /* Set your desired text color on hover */
+    }
 </style>
 
 
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
-        {% if request.user.is_authenticated %}
-            <a class="navbar-brand" href="{% url 'user_home' request.user.username %}">Home</a>
-         {% else %}
-            <a class="navbar-brand" href="{% url 'home' %}">Home</a>
-        {% endif %}
+        
+        <a class="navbar-brand" href="{% url 'home' %}">Home</a>
+      
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
             {% if user.is_authenticated %}
             <ul class="navbar-nav me-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'notices' username=request.user.username %}">Notices</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'createrequest' username=request.user.username %}">Create</a>
-                </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        View
+                        Request
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end navbar-dark bg-dark">
-                        <li><a class="dropdown-item text-light" href="{% url 'viewpending' username=request.user.username %}">Pending</a></li>
-                        <li><a class="dropdown-item text-light" href="{% url 'viewapproved' username=request.user.username %}">Approved</a></li>
-                        <li><a class="dropdown-item text-light" href="{% url 'viewcompleted' username=request.user.username %}">Completed</a></li>
+                        <li><a class="dropdown-item text-light" href="{% url 'submitrequest' username=request.user.username %}">Submit Request</a></li>
+                        <li><a class="dropdown-item text-light" href="{% url 'viewreview' username=request.user.username %}">In Review</a></li>
+                        <li><a class="dropdown-item text-light" href="{% url 'viewactive' username=request.user.username %}">Active Requests</a></li>
+                        <li><a class="dropdown-item text-light" href="{% url 'viewhistory' username=request.user.username %}">Request History</a></li>
                     </ul>
                 </li>
                 {% if user.is_authenticated and user.is_superuser %}

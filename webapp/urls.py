@@ -11,12 +11,10 @@ urlpatterns = [
    path('unauthorized/', views.unauthorized_user, name='unauthorized'),
   
    #dynamic url route
-   path('<str:username>/', views.home, name='user_home'),
-   path('<str:username>/notices/', views.notices_user, name='notices'),
-   path('<str:username>/createrequest/', views.createrequest_user, name='createrequest'),
-   path('<str:username>/viewpending/', views.viewpending_user, name='viewpending'),
-   path('<str:username>/viewapproved/', views.viewapproved_user, name='viewapproved'),
-   path('<str:username>/viewcompleted/', views.viewcompleted_user, name='viewcompleted'),
+   path('<str:username>/submitrequest/', views.submitrequest_user, name='submitrequest'),
+   path('<str:username>/viewreview/', views.viewreview_user, name='viewreview'),
+   path('<str:username>/viewactive/', views.viewactive_user, name='viewactive'),
+   path('<str:username>/viewhistory/', views.viewhistory_user, name='viewhistory'),
 
    #media route
    path("media/user_uploads/<str:file>",views.secureFile, name="securefileupload")

@@ -25,18 +25,27 @@
             <ul class="navbar-nav me-auto">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Request
+                        Processing
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end navbar-dark bg-dark">
                         <li><a class="dropdown-item text-light" href="{% url 'submitrequest' username=request.user.username %}">Submit Request</a></li>
                         <li><a class="dropdown-item text-light" href="{% url 'viewreview' username=request.user.username %}">In Review</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Status
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end navbar-dark bg-dark">
                         <li><a class="dropdown-item text-light" href="{% url 'viewactive' username=request.user.username %}">Active Requests</a></li>
                         <li><a class="dropdown-item text-light" href="{% url 'viewhistory' username=request.user.username %}">Request History</a></li>
                     </ul>
                 </li>
+
                 {% if user.is_authenticated and user.is_superuser %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'admin:index' %}">Admin</a>
+                    <a class="nav-link" href="{% url 'admin:index' %}">Database</a>
                 </li>
                 {%endif%}
             </ul>

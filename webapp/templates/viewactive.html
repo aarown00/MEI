@@ -41,7 +41,6 @@
     }
     .btn-link {
         color: #007bff;
-        text-decoration: none;
         cursor: pointer;
     }
 
@@ -52,7 +51,7 @@
 <div class="container-fluid px-4">
     <h1 class="mt-4 mb-4">Active Requests</h1>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item active">The data below reflects in progress work requests.</li>
+        <li class="breadcrumb-item active">This table shows all requests that have been approved and are currently being processed or worked on. You can track the progress and see updates below.</li>
     </ol>
     <div class="card mb-4">
         <div class="card-header">
@@ -64,33 +63,37 @@
                 <table id="it-request-table" class="hover" style="width:100%">
                     <thead>
                         <tr>
-                            <th>Requestor</th>
-                            <th>Equipment Name</th>
-                            <th>Equipment Type</th>
+                            <th>RTN#</th>
                             <th>Issue</th>     
                             <th>Requested At</th>
                             <th>Attachment
                             <th>Status</th>
+                            {% if user.is_superuser %}
+                            <th>Action</th>
+                            {% endif %}
                         </tr>
                     </thead>
                     <tbody>
                         {% for it_request in it_requests %}
                         {% if it_request.status == "Active" %}
                         <tr>
-                            <td data-label="Requestor"><button class="btn btn-link" onclick="showRequestorDetails('{{ it_request.user.first_name }} {{ it_request.user.last_name }}', '{{ it_request.user.email }}', '{{ it_request.user.username }}', '{{ it_request.department }}')">{{ it_request.user.first_name }} {{ it_request.user.last_name }}</button></td>
-                            <td data-label="Equipment Name">{{ it_request.eq_name }}</td>
-                            <td data-label="Equipment Type">{{ it_request.eq_type }}</td>
-                            <td data-label="Issue"><button class="btn btn-link" onclick="showDescription('{{ it_request.description|escapejs }}')">{{ it_request.issue }}</button></td>
+                            <td data-label="RTN#"><button class="btn btn-link" onclick="showRequestorDetails('{{ it_request.user.first_name }} {{ it_request.user.last_name }}', '{{ it_request.user.email }}', '{{ it_request.user.username }}', '{{ it_request.department }}')">{{ it_request.id }}</button></td>
+                            <td data-label="Issue"><button class="btn btn-link" onclick="showIssueDetails('{{ it_request.eq_name }}', '{{ it_request.eq_type }}', '{{ it_request.description|escapejs }}')">{{ it_request.issue }}</button></td>
                             <td data-label="Requested At">{{ it_request.requested_at }}</td>
                             <td data-label="Upload">
                                 {% if it_request.upload %}
-                                    <a href="{{ it_request.upload.url }}" class="no-underline">View</a>
+                                    <a href="{{ it_request.upload.url }}">View</a>
                                 {% else %}
                                     None
                                 {% endif %}
                             <td data-label="Status">
-                                    <button type="button" class="btn btn-success">Active</button>
+                                <button type="button" class="btn btn-success">Active</button>
                             </td>
+                            {% if user.is_superuser %}
+                            <td data-label="Action">
+                                <button type="button" class="btn btn-primary" onclick="confirmDone({{ it_request.pk }})">Update</button>
+                            </td> 
+                            {% endif %}                           
                         </tr>
                         {% endif %}
                         {% endfor %}
@@ -101,15 +104,25 @@
     </div>
 </div>
 
-<!-- Description Modal -->
-<div class="modal fade" id="descriptionModal" tabindex="-1" aria-labelledby="descriptionModalLabel" aria-hidden="true">
+<!-- Issue Details Modal -->
+<div class="modal fade" id="issueModal" tabindex="-1" aria-labelledby="issueModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="descriptionModalLabel">Description</h5>
+                <h5 class="modal-title" id="issueModalLabel">Issue Details</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body" id="descriptionModalBody">
+            <div class="modal-body" id="issueModalBody">
+                <dl class="row">
+                    <dt class="col-sm-4">Equipment Name:</dt>
+                    <dd class="col-sm-8" id="issueEqName"></dd>
+
+                    <dt class="col-sm-4">Equipment Type:</dt>
+                    <dd class="col-sm-8" id="issueEqType"></dd>
+
+                    <dt class="col-sm-4">Description:</dt>
+                    <dd class="col-sm-8" id="issueDescription"></dd>
+                </dl>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -148,5 +161,50 @@
     </div>
 </div>
 
+<!-- COMPLETE MODAL -->
+<div class="modal fade" id="completeModal" tabindex="-1" role="dialog" aria-labelledby="completeModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="completeModalLabel">Update Request</h5>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to complete this request?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                <button type="button" class="btn btn-primary" id="confirmDoneBtn">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
 
+<!-- UPDATE MODAL JS -->
+<script>
+    let requestIdToComplete = null;
+   
+    function confirmDone(requestId) {
+        requestIdToComplete = requestId;
+        $('#completeModal').modal('show');
+    }
+
+
+    document.getElementById('confirmDoneBtn').addEventListener('click', function () {
+        if (requestIdToComplete) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `/it_request/${requestIdToComplete}/done/`;  // Adjust the URL as needed
+
+            const csrfToken = document.createElement('input');
+            csrfToken.type = 'hidden';
+            csrfToken.name = 'csrfmiddlewaretoken';
+            csrfToken.value = '{{ csrf_token }}';  // Ensure you pass the CSRF token here
+
+            form.appendChild(csrfToken);
+            document.body.appendChild(form);
+            form.submit();
+        }
+    });
+
+</script>
 {% endblock %}

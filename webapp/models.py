@@ -27,5 +27,8 @@ class IT_Request(models.Model):
     #Foreign Model
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
+    #ID field
+    id = models.AutoField(primary_key=True)
+
     def __str__(self):
-        return f"User: {self.user.username} {self.user.first_name} {self.user.last_name}, {self.issue}, {self.status}"
+        return f"Request: {self.id}, {self.status}, {self.issue}, User:{self.user.first_name} {self.user.last_name}"

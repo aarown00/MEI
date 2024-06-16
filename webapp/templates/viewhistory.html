@@ -40,8 +40,7 @@
         background-color: #f1f1f1;
     }
     .btn-link {
-        color: #007bff;
-        text-decoration: none;
+        color: #007bff;      
         cursor: pointer;
     }
 
@@ -52,7 +51,7 @@
 <div class="container-fluid px-4">
     <h1 class="mt-4 mb-4">History</h1>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item active">The data below reflects history of work requests.</li>
+        <li class="breadcrumb-item active">This table contains records of all requests that have been completed or cancelled.</li>
     </ol>
     <div class="card mb-4">
         <div class="card-header">
@@ -64,9 +63,7 @@
                 <table id="it-request-table" class="hover" style="width:100%">
                     <thead>
                         <tr>
-                            <th>Requestor</th>
-                            <th>Equipment Name</th>
-                            <th>Equipment Type</th>
+                            <th>RTN#</th>
                             <th>Issue</th>     
                             <th>Requested At</th>
                             <th>Attachment</th>
@@ -77,14 +74,12 @@
                         {% for it_request in it_requests %}
                         {% if it_request.status == "Completed" or it_request.status == "Cancelled" %}
                         <tr>
-                            <td data-label="Requestor"><button class="btn btn-link" onclick="showRequestorDetails('{{ it_request.user.first_name }} {{ it_request.user.last_name }}', '{{ it_request.user.email }}', '{{ it_request.user.username }}', '{{ it_request.department }}')">{{ it_request.user.first_name }} {{ it_request.user.last_name }}</button></td>
-                            <td data-label="Equipment Name">{{ it_request.eq_name }}</td>
-                            <td data-label="Equipment Type">{{ it_request.eq_type }}</td>
-                            <td data-label="Issue"><button class="btn btn-link" onclick="showDescription('{{ it_request.description|escapejs }}')">{{ it_request.issue }}</button></td>
+                            <td data-label="RTN#"><button class="btn btn-link" onclick="showRequestorDetails('{{ it_request.user.first_name }} {{ it_request.user.last_name }}', '{{ it_request.user.email }}', '{{ it_request.user.username }}', '{{ it_request.department }}')">{{ it_request.id }}</button></td>
+                            <td data-label="Issue"><button class="btn btn-link" onclick="showIssueDetails('{{ it_request.eq_name }}', '{{ it_request.eq_type }}', '{{ it_request.description|escapejs }}')">{{ it_request.issue }}</button></td>
                             <td data-label="Requested At">{{ it_request.requested_at }}</td>
                             <td data-label="Upload">
                                 {% if it_request.upload %}
-                                    <a href="{{ it_request.upload.url }}" class="no-underline">View</a>
+                                    <a href="{{ it_request.upload.url }}">View</a>
                                 {% else %}
                                     None
                                 {% endif %}
@@ -94,7 +89,7 @@
                                 {% elif it_request.status == "Cancelled" %}
                                     <button type="button" class="btn btn-danger">Cancelled</button>
                                 {% endif %}
-                            </td>
+                            </td>                           
                         </tr>
                         {% endif %}
                         {% endfor %}
@@ -105,15 +100,25 @@
     </div>
 </div>
 
-<!-- Description Modal -->
-<div class="modal fade" id="descriptionModal" tabindex="-1" aria-labelledby="descriptionModalLabel" aria-hidden="true">
+<!-- Issue Details Modal -->
+<div class="modal fade" id="issueModal" tabindex="-1" aria-labelledby="issueModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="descriptionModalLabel">Description</h5>
+                <h5 class="modal-title" id="issueModalLabel">Issue Details</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body" id="descriptionModalBody">
+            <div class="modal-body" id="issueModalBody">
+                <dl class="row">
+                    <dt class="col-sm-4">Equipment Name:</dt>
+                    <dd class="col-sm-8" id="issueEqName"></dd>
+
+                    <dt class="col-sm-4">Equipment Type:</dt>
+                    <dd class="col-sm-8" id="issueEqType"></dd>
+
+                    <dt class="col-sm-4">Description:</dt>
+                    <dd class="col-sm-8" id="issueDescription"></dd>
+                </dl>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

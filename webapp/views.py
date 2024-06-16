@@ -108,9 +108,9 @@ def viewreview_user(request, username=None):
     if request.user.is_authenticated:
         if request.user.username == username:
             if request.user.is_superuser:
-                it_requests = IT_Request.objects.all()
+                it_requests = IT_Request.objects.all().order_by('-requested_at')
             else:
-                it_requests = IT_Request.objects.filter(user=request.user)
+                it_requests = IT_Request.objects.filter(user=request.user).order_by('-requested_at')
             return render(request, 'viewreview.html', {'it_requests': it_requests})
         else:
             return redirect('unauthorized')
@@ -123,9 +123,9 @@ def viewactive_user(request, username=None):
     if request.user.is_authenticated:
         if request.user.username == username:
             if request.user.is_superuser:
-                it_requests = IT_Request.objects.all()
+                it_requests = IT_Request.objects.all().order_by('-requested_at')
             else:
-                it_requests = IT_Request.objects.filter(user=request.user)
+                it_requests = IT_Request.objects.filter(user=request.user).order_by('-requested_at')
             return render(request, 'viewactive.html', {'it_requests': it_requests})
         else:
             return redirect('unauthorized')
@@ -138,12 +138,63 @@ def viewhistory_user(request, username=None):
     if request.user.is_authenticated:
         if request.user.username == username:
             if request.user.is_superuser:
-                it_requests = IT_Request.objects.all()
+                it_requests = IT_Request.objects.all().order_by('-requested_at')
             else:
-                it_requests = IT_Request.objects.filter(user=request.user)
+                it_requests = IT_Request.objects.filter(user=request.user).order_by('-requested_at')
             return render(request, 'viewhistory.html', {'it_requests': it_requests})
         else:
             return redirect('unauthorized')
     else:
         messages.error(request, "You must be logged in first!")
         return redirect('login')
+    
+
+def cancelrequest_user(request, pk):
+    print(f"Cancel request received for pk={pk}")  # Debug statement
+    it_request = get_object_or_404(IT_Request, pk=pk)
+    # Check if the user is the owner or a superuser
+    if request.user == it_request.user or request.user.is_superuser:
+        if it_request.status == 'Waiting':
+            it_request.status = 'Cancelled'
+            it_request.save()
+            messages.warning(request, 'Request has been cancelled.')
+        else:
+            return HttpResponse("Request cannot be cancelled.")
+    else:
+        return HttpResponse("You are not authorized to perform this action.")
+    
+    return redirect('viewreview', username=request.user.username)
+
+
+def approverequest_user(request, pk):
+    print(f"Approve request received for pk={pk}")  # Debug statement
+    it_request = get_object_or_404(IT_Request, pk=pk)
+    # Check if the user is the owner or a superuser
+    if request.user.is_superuser:
+        if it_request.status == 'Waiting':
+            it_request.status = 'Active'
+            it_request.save()
+            messages.success(request, 'Request has been approved.')
+        else:
+            return HttpResponse("Request cannot be approved.")
+    else:
+        return HttpResponse("You are not authorized to perform this action.")
+    
+    return redirect('viewreview', username=request.user.username)
+
+def donerequest_user(request, pk):
+    print(f"Complete request received for pk={pk}")  # Debug statement
+    it_request = get_object_or_404(IT_Request, pk=pk)
+    # Check if the user is the owner or a superuser
+    if request.user.is_superuser:
+        if it_request.status == 'Active':
+            it_request.status = 'Completed'
+            it_request.save()
+            messages.success(request, 'Request has been completed.')
+        else:
+            return HttpResponse("Request cannot be updated.")
+    else:
+        return HttpResponse("You are not authorized to perform this action.")
+    
+    return redirect('viewactive', username=request.user.username)
+

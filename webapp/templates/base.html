@@ -84,10 +84,14 @@
         $(document).ready(function() {
             $('#it-request-table').DataTable({
                 paging: true,
-                searching: true,
+                searching: true, 
                 ordering: false,
+                language: {
+                    searchPlaceholder: 'Enter keywords here...'
+                }
             });
         });
+
 
         function showIssueDetails(eqName, eqType, description) {
             document.getElementById('issueEqName').innerText = eqName;

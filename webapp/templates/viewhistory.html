@@ -76,7 +76,7 @@
                         <tr>
                             <td data-label="RTN#"><button class="btn btn-link" onclick="showRequestorDetails('{{ it_request.user.first_name }} {{ it_request.user.last_name }}', '{{ it_request.user.email }}', '{{ it_request.user.username }}', '{{ it_request.department }}')">{{ it_request.id }}</button></td>
                             <td data-label="Issue"><button class="btn btn-link" onclick="showIssueDetails('{{ it_request.eq_name }}', '{{ it_request.eq_type }}', '{{ it_request.description|escapejs }}')">{{ it_request.issue }}</button></td>
-                            <td data-label="Requested At">{{ it_request.requested_at }}</td>
+                            <td data-label="Requested At">{{ it_request.formatted_requested_at }}</td>
                             <td data-label="Upload">
                                 {% if it_request.upload %}
                                     <a href="{{ it_request.upload.url }}">View</a>

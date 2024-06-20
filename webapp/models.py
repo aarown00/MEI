@@ -32,3 +32,6 @@ class IT_Request(models.Model):
 
     def __str__(self):
         return f"Request: {self.id}, {self.status}, {self.issue}, User:{self.user.first_name} {self.user.last_name}"
+    
+    def formatted_requested_at(self):
+        return self.requested_at.strftime("%m/%d/%Y, %I:%M %p")

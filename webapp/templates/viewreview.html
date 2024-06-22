@@ -50,15 +50,27 @@
         text-decoration: none;
         cursor: pointer;
     }
+    .btn-status {
+        width: 120px; /* Adjust this value as needed */
+    }
+    
+    .btn-status1 {
+        width: 150px; /* Adjust this value as needed */
+    }
+    
+    .btn-group {
+        width: 150px; /* Adjust this value as needed */
+    }
+ 
 
 
 
 </style>
 
 <div class="container-fluid px-4">
-    <h1 class="mt-4 mb-4">In Review</h1>
+    <h1 class="mt-4 mb-4">Request Status</h1>
     <ol class="breadcrumb mb-4">
-        <li class="breadcrumb-item active">This table displays all requests that are currently under review by the admin team. Please wait for the Admin to approve your requests.</li>
+        <li class="breadcrumb-item active">Please refer to this table to track the progress and approval of your requests.</li>
     </ol>
     <div class="card mb-4">
         <div class="card-header">
@@ -70,36 +82,80 @@
                 <table id="it-request-table" class="hover" style="width:100%">
                     <thead>
                         <tr>
-                            <th>RTN#</th>
-                            <th>Issue</th>     
+                            <th>RTN#</th>    
                             <th>Requested At</th>
-                            <th>Attachment</th>
                             <th>Status</th>
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for it_request in it_requests %}
-                        {% if it_request.status == "Waiting" %}
+                        {% if it_request.status == "Waiting" or it_request.status == "Pending" or it_request.status == "Completed" %}
                         <tr>
-                            <td data-label="RTN#"><button class="btn btn-link" onclick="showRequestorDetails('{{ it_request.user.first_name }} {{ it_request.user.last_name }}', '{{ it_request.user.email }}', '{{ it_request.user.username }}', '{{ it_request.department }}')">{{ it_request.id }}</button></td>
-                            <td data-label="Issue"><button class="btn btn-link" onclick="showIssueDetails('{{ it_request.eq_name }}', '{{ it_request.eq_type }}', '{{ it_request.description|escapejs }}')">{{ it_request.issue }}</button></td>
-                            <td data-label="Requested At">{{ it_request.formatted_requested_at }}</td>
-                            <td data-label="Upload">
-                                {% if it_request.upload %}
-                                    <a href="{{ it_request.upload.url }}">View</a>
-                                {% else %}
-                                    None
-                                {% endif %}
-                            <td data-label="Status">
-                                <button type="button" class="btn btn-secondary">Waiting</button>
+                            <td data-label="RTN#">
+                                <button class="btn btn-link" 
+                                    onclick="showAllDetails(
+                                        '{{ it_request.id }}',
+                                        '{{ it_request.user.first_name }} {{ it_request.user.last_name }}',
+                                        '{{ it_request.user.email }}',
+                                        '{{ it_request.user.username }}',
+                                        '{{ it_request.department }}',
+                                        '{{ it_request.eq_name }}',
+                                        '{{ it_request.eq_type }}',
+                                        '{{ it_request.description|escapejs }}',
+                                        '{% if it_request.upload %}{{ it_request.upload.url }}{% else %}{% endif %}'
+                                    )">
+                                    {{ it_request.id }}
+                                </button>
                             </td>
+                            
+                            <td data-label="Requested At">{{ it_request.formatted_requested_at }}</td>
+                            <td data-label="Status">
+                                {% if it_request.status == 'Waiting' %}
+                                    <button type="button" class="btn btn-secondary btn-status">Waiting</button>
+                                {% elif it_request.status == 'Pending' %}
+                                    <button type="button" class="btn btn-warning btn-status">Pending</button>
+                                {% else %}
+                                    <button type="button" class="btn btn-success btn-status">Completed</button>
+                                {% endif %}
+                            </td>
+                                
                             <td data-label="Action">
                                 {% if user.is_superuser %}
-                                    <button type="button" class="btn btn-success" onclick="confirmApprove({{ it_request.pk }})">Approve</button>
+                                    {% if it_request.status == "Waiting" %}
+                                        
+                                    <div class="btn-group" role="group" aria-label="Approve or Cancel">
+                                        <button type="button" class="btn btn-outline-primary btn-status1" onclick="confirmApprove({{ it_request.pk }})">Approve</button>
+                                        <button type="button" class="btn btn-outline-danger btn-status1" onclick="confirmCancel({{ it_request.pk }})">
+                                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+                                            <path d="M7.297 8l-4.13 4.132-.826-.824L6.47 8 2.34 3.824l.826-.824L7.297 7.15l4.132-4.13.824.826L8.124 8l4.13 4.132-.824.826-4.13-4.13-4.132 4.13-.826-.824L7.297 8z"/>
+                                          </svg>
+                                        </button>
+                                      </div>
+                                      
+                                    {% elif it_request.status == 'Pending'%}
+                                        <button type="button" class="btn btn-outline-primary btn-status1" onclick="confirmDone({{ it_request.pk }})">Done</button>
+
+                                    {% else %}
+                                        <button type="button" class="btn btn-outline-danger btn-status1" onclick="confirmClose({{ it_request.pk }})">Close</button>
+                                    {% endif %}
+                                
+                            
+
+
+                                {% else %}
+
+                                    {% if it_request.status == 'Waiting'%}
+                                            <button type="button" class="btn btn-outline-danger btn-status1" onclick="confirmCancel({{ it_request.pk }})">Cancel</button>
+                                    {% elif it_request.status == 'Completed'%}
+                                            <button type="button" class="btn btn-outline-danger btn-status1" onclick="confirmClose({{ it_request.pk }})">Close</button>
+                                    {% else %}
+                                            None
+                                    {% endif %}
+                                      
                                 {% endif %}
-                                <button type="button" class="btn btn-danger" onclick="confirmCancel({{ it_request.pk }})">Cancel</button>
-                            </td>                            
+                            </td> 
+                                                       
                         </tr>
                         {% endif %}
                         {% endfor %}
@@ -110,43 +166,16 @@
     </div>
 </div>
 
-<!-- Issue Details Modal -->
-<div class="modal fade" id="issueModal" tabindex="-1" aria-labelledby="issueModalLabel" aria-hidden="true">
+<!-- Combined Details Modal -->
+<div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="issueModalLabel">Issue Details</h5>
+                <h5 class="modal-title" id="detailsModalLabel">RTN# </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body" id="issueModalBody">
-                <dl class="row">
-                    <dt class="col-sm-4">Equipment Name:</dt>
-                    <dd class="col-sm-8" id="issueEqName"></dd>
-
-                    <dt class="col-sm-4">Equipment Type:</dt>
-                    <dd class="col-sm-8" id="issueEqType"></dd>
-
-                    <dt class="col-sm-4">Description:</dt>
-                    <dd class="col-sm-8" id="issueDescription"></dd>
-                </dl>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-<!-- Requestor Details Modal -->
-<div class="modal fade" id="requestorModal" tabindex="-1" aria-labelledby="requestorModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="requestorModalLabel">Requestor Details</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body" id="requestorModalBody">
+            <div class="modal-body" id="detailsModalBody">
+                <h6>Requestor Details</h6>
                 <dl class="row">
                     <dt class="col-sm-4">Full Name:</dt>
                     <dd class="col-sm-8" id="requestorFullName"></dd>
@@ -159,6 +188,20 @@
 
                     <dt class="col-sm-4">Department:</dt>
                     <dd class="col-sm-8" id="requestorDepartment"></dd>
+                </dl>
+                <h6>Request Details</h6>
+                <dl class="row">
+                    <dt class="col-sm-4">Equipment: Name</dt>
+                    <dd class="col-sm-8" id="issueEqName"></dd>
+
+                    <dt class="col-sm-4">Equipment Type:</dt>
+                    <dd class="col-sm-8" id="issueEqType"></dd>
+
+                    <dt class="col-sm-4">Description:</dt>
+                    <dd class="col-sm-8" id="issueDescription"></dd>
+
+                    <dt class="col-sm-4">Attachment:</dt>
+                    <dd class="col-sm-8" id="issueUpload"></dd>
                 </dl>
             </div>
             <div class="modal-footer">
@@ -175,8 +218,8 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="cancelModalLabel">Confirm Cancellation</h5>
             </div>
-            <div class="modal-body">
-                Are you sure you want to cancel this request?
+            <div class="modal-body" style="text-align: center;">
+                <p>Are you sure you want to cancel this request? This request will be moved to history.</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
@@ -193,12 +236,48 @@
             <div class="modal-header">
                 <h5 class="modal-title" id="approveModalLabel">Confirm Approval</h5>
             </div>
-            <div class="modal-body">
-                Are you sure you want to approve this request?
+            <div class="modal-body" style="text-align: center;">
+                <p>Are you sure you want to approve this request? The status will be updated to pending.</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-                <button type="button" class="btn btn-success" id="confirmApproveBtn">Yes</button>
+                <button type="button" class="btn btn-primary" id="confirmApproveBtn">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- COMPLETE MODAL -->
+<div class="modal fade" id="completeModal" tabindex="-1" role="dialog" aria-labelledby="completeModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="completeModalLabel">Update Request</h5>
+            </div>
+            <div class="modal-body" style="text-align: center;">
+             <p>Mark this request as done?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                <button type="button" class="btn btn-primary" id="confirmDoneBtn">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- CLOSE MODAL -->
+<div class="modal fade" id="closeModal" tabindex="-1" role="dialog" aria-labelledby="closeModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="closeModalLabel">Close Request</h5>
+            </div>
+            <div class="modal-body" style="text-align: center;">
+                <p>Are you sure you want to close this request? This request will be moved to history.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                <button type="button" class="btn btn-danger" id="confirmCloseBtn">Yes</button>
             </div>
         </div>
     </div>
@@ -208,6 +287,8 @@
 <script>
     let requestIdToCancel = null;
     let requestIdToApprove = null;
+    let requestIdToComplete = null;
+    let requestIdToClose = null;
 
     function confirmCancel(requestId) {
         requestIdToCancel = requestId;
@@ -217,6 +298,16 @@
     function confirmApprove(requestId) {
         requestIdToApprove = requestId;
         $('#approveModal').modal('show');
+    }
+
+    function confirmDone(requestId) {
+        requestIdToComplete = requestId;
+        $('#completeModal').modal('show');
+    }
+
+    function confirmClose(requestId) {
+        requestIdToClose = requestId;
+        $('#closeModal').modal('show');
     }
 
     document.getElementById('confirmCancelBtn').addEventListener('click', function () {
@@ -241,6 +332,41 @@
             const form = document.createElement('form');
             form.method = 'POST';
             form.action = `/it_request/${requestIdToApprove}/approve/`;  // Adjust the URL as needed
+
+            const csrfToken = document.createElement('input');
+            csrfToken.type = 'hidden';
+            csrfToken.name = 'csrfmiddlewaretoken';
+            csrfToken.value = '{{ csrf_token }}';  // Ensure you pass the CSRF token here
+
+            form.appendChild(csrfToken);
+            document.body.appendChild(form);
+            form.submit();
+        }
+    });
+
+    document.getElementById('confirmDoneBtn').addEventListener('click', function () {
+        if (requestIdToComplete) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `/it_request/${requestIdToComplete}/done/`;  // Adjust the URL as needed
+
+            const csrfToken = document.createElement('input');
+            csrfToken.type = 'hidden';
+            csrfToken.name = 'csrfmiddlewaretoken';
+            csrfToken.value = '{{ csrf_token }}';  // Ensure you pass the CSRF token here
+
+            form.appendChild(csrfToken);
+            document.body.appendChild(form);
+            form.submit();
+        }
+    });
+
+
+    document.getElementById('confirmCloseBtn').addEventListener('click', function () {
+        if (requestIdToClose) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `/it_request/${requestIdToClose}/close/`;  // Adjust the URL as needed
 
             const csrfToken = document.createElement('input');
             csrfToken.type = 'hidden';

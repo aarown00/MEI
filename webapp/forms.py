@@ -44,6 +44,18 @@ class RegisterForm(UserCreationForm):
             raise forms.ValidationError("ID number should contain up to 10 digits.")
         return username
     
+    def clean_first_name(self):
+        first_name = self.cleaned_data.get('first_name')
+        if not first_name.isalpha():
+            raise forms.ValidationError("First name should contain only letters.")
+        return first_name
+
+    def clean_last_name(self):
+        last_name = self.cleaned_data.get('last_name')
+        if not last_name.isalpha():
+            raise forms.ValidationError("Last name should contain only letters.")
+        return last_name
+    
 #IT Request Form
 class IT_RequestForm(forms.ModelForm):
 

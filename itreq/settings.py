@@ -79,7 +79,7 @@ WSGI_APPLICATION = 'itreq.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'aaronmartdb',
+        'NAME': 'meidb',
         'USER': 'aaronmart',
         'PASSWORD': 'pass123',
         'HOST': 'localhost',

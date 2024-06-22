@@ -1,0 +1,72 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <style>
+        .profile-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .profile-container h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 10px;
+        }
+        .profile-field {
+            margin-bottom: 10px;
+        }
+        .profile-field label {
+            font-weight: bold;
+            display: inline-block;
+            width: 120px;
+        }
+        .profile-field p {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-container">
+        <h1>User Profile</h1>
+        <div class="profile-field">
+            <label>User:</label>
+            {% if user.is_superuser %}
+                <p>Admin</p>
+            {% else %}
+                <p>Employee</p>
+            {% endif %}
+
+        </div>
+        <div class="profile-field">
+            <label>Username:</label>
+            <p>{{ user.username }}</p>
+        </div>
+        <div class="profile-field">
+            <label>Full Name:</label>
+            <p>{{ user.get_full_name }}</p>
+        </div>
+        <div class="profile-field">
+            <label>Email:</label>
+            <p>{{ user.email }}</p>
+        </div>
+        <!-- Additional fields from Profile model can be added here -->
+    </div>
+</body>
+</html>
+
+{% endblock %}

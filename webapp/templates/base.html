@@ -81,38 +81,49 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
     
     <script>
-        $(document).ready(function() {
-            $('#it-request-table').DataTable({
-                paging: true,
-                searching: true, 
-                ordering: false,
-                language: {
-                    searchPlaceholder: 'Enter keywords here...'
-                }
+            $(document).ready(function() {
+                var table = $('#it-request-table').DataTable({
+                    paging: true,
+                    searching: true,
+                    ordering: false,
+                    language: {
+                        searchPlaceholder: 'RTN#/Status here.....'
+                    },
+                    columnDefs: [
+                        { searchable: true, targets: [0, 2] },  // Make the first column searchable
+                        { searchable: false, targets: '_all' } // Disable searching for all other columns
+                    ]
+                });
+        
+
             });
-        });
-
-
-        function showIssueDetails(eqName, eqType, description) {
-            document.getElementById('issueEqName').innerText = eqName;
-            document.getElementById('issueEqType').innerText = eqType;
-            document.getElementById('issueDescription').innerText = description;
         
-            var myModal = new bootstrap.Modal(document.getElementById('issueModal'));
-            myModal.show();
-        }
+        function showAllDetails(id, fullName, email, employeeId, department, eqName, eqType, description, uploadUrl) {
+            // Populate Modal Title with the RTN#
+            document.getElementById('detailsModalLabel').innerText = 'Request Ticket # ' + id;
         
-
-        function showRequestorDetails(fullName, email, employeeId, department) {
+            // Populate Requestor Details
             document.getElementById('requestorFullName').innerText = fullName;
             document.getElementById('requestorEmail').innerText = email;
             document.getElementById('requestorEmployeeId').innerText = employeeId;
             document.getElementById('requestorDepartment').innerText = department;
         
-            var myModal = new bootstrap.Modal(document.getElementById('requestorModal'));
+            // Populate Issue Details
+            document.getElementById('issueEqName').innerText = eqName;
+            document.getElementById('issueEqType').innerText = eqType;
+            document.getElementById('issueDescription').innerText = description;
+        
+            // Populate Upload Details
+            var uploadElement = document.getElementById('issueUpload');
+            if (uploadUrl) {
+                uploadElement.innerHTML = '<a href="' + uploadUrl + '">View</a>';
+            } else {
+                uploadElement.innerText = 'None';
+            }
+        
+            // Show the combined modal
+            var myModal = new bootstrap.Modal(document.getElementById('detailsModal'));
             myModal.show();
-
-            
         }
         
     </script>

@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import FileExtensionValidator
+from django.utils import timezone
 
 
 class IT_Request(models.Model):
@@ -12,7 +13,7 @@ class IT_Request(models.Model):
     EQ_TYPE_CHOICES = generate_choices('Desktop', 'Laptop', 'Printer', 'Network Devices', 'Peripherals')
     ISSUE_CHOICES = generate_choices('Account Creation/Deletion', 'Password Reset/Unlock', 'Server Access', 'Application Installation', 'Troubleshoot', 
                                      'Security Incident Report', 'Data Backup/Recovery', 'Hardware Installation', 'Network' )
-    STATUS_CHOICES = generate_choices('Waiting', 'Active', 'Completed', 'Cancelled')
+    STATUS_CHOICES = generate_choices('Waiting', 'Pending', 'Completed', 'Cancelled', 'Closed')
     DEP_CHOICES = generate_choices('Human Resources (HR)', 'Finance/Accounting', 'Information Technology (IT)', 'Marketing/Sales', 'Operations', 'Engineering')
 
     # Model fields
@@ -34,4 +35,4 @@ class IT_Request(models.Model):
         return f"Request: {self.id}, {self.status}, {self.issue}, User:{self.user.first_name} {self.user.last_name}"
     
     def formatted_requested_at(self):
-        return self.requested_at.strftime("%m/%d/%Y, %I:%M %p")
+        return self.requested_at.astimezone(timezone.get_current_timezone()).strftime("%m/%d/%Y, %I:%M %p")

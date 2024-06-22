@@ -68,7 +68,12 @@
             <p data-aos="fade-up" data-aos-delay="100">Effortlessly Request and Manage IT Services with Our User-Friendly Platform.</p>
             <div class="d-flex flex-column flex-md-row" data-aos="fade-up" data-aos-delay="200">
               {% if request.user.is_authenticated %}
-              <a href="{% url 'submitrequest' username=request.user.username %}" class="btn-get-started">Get Started <i class="bi bi-arrow-right"></i></a>
+              
+                <a href="{% url 'submitrequest' username=request.user.username %}" class="btn-get-started m-1">Request<i class="bi bi-arrow-right"></i></a> 
+                <a href="{% url 'viewreview' username=request.user.username %}" class="btn-get-started m-1">View<i class="bi bi-arrow-right"></i></a>
+                <a href="{% url 'viewhistory' username=request.user.username %}" class="btn-get-started m-1">History<i class="bi bi-arrow-right"></i></a>
+            
+            
                  
               {% else %}
                   <a href="login" class="btn-get-started">Log in <i class="bi bi-arrow-right"></i></a>

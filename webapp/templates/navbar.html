@@ -23,26 +23,23 @@
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
             {% if user.is_authenticated %}
             <ul class="navbar-nav me-auto">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Processing
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'submitrequest' username=request.user.username %}">
+                        Submit
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-end navbar-dark bg-dark">
-                        <li><a class="dropdown-item text-light" href="{% url 'submitrequest' username=request.user.username %}">Submit Request</a></li>
-                        <li><a class="dropdown-item text-light" href="{% url 'viewreview' username=request.user.username %}">In Review</a></li>
-                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'viewreview' username=request.user.username %}">
+                        View
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'viewhistory' username=request.user.username %}">
+                        History
+                    </a>
                 </li>
 
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Status
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end navbar-dark bg-dark">
-                        <li><a class="dropdown-item text-light" href="{% url 'viewactive' username=request.user.username %}">Active Requests</a></li>
-                        <li><a class="dropdown-item text-light" href="{% url 'viewhistory' username=request.user.username %}">Request History</a></li>
-                    </ul>
-                </li>
-
+              
                 {% if user.is_authenticated and user.is_superuser %}
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'admin:index' %}">Database</a>
@@ -53,9 +50,10 @@
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Account
+                        {{ user.first_name }} {{ user.last_name }}
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end navbar-dark bg-dark">
+                        <li><a class="dropdown-item text-light" href="{% url 'viewprofile' username=request.user.username %}">Profile</a></li>
                         <li><a class="dropdown-item text-light" href="{% url 'logout' %}">Logout</a></li>
                     </ul>
                 </li>

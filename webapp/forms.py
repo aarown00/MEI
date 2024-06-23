@@ -32,7 +32,7 @@ class RegisterForm(UserCreationForm):
             'placeholder': 'Password'
         })
         self.fields['password1'].label = ''
-        self.fields['password1'].help_text = '<ul class="form-text text-muted small"><li>Your password can\'t be too similar to your other personal information.</li><li>Your password must contain at least 8 characters.</li><li>Your password can\'t be a commonly used password.</li><li>Your password can\'t be entirely numeric.</li></ul>'
+        self.fields['password1'].help_text = ''
 
         self.fields['password2'].widget.attrs.update({
             'class': 'form-control', 
@@ -41,6 +41,8 @@ class RegisterForm(UserCreationForm):
         self.fields['password2'].label = ''
         self.fields['password2'].help_text = '<span class="form-text text-muted"><small>Enter the same password as before, for verification.</small></span>'
 
+   
+   
     def clean_username(self):
         username = self.cleaned_data.get('username')
         if not username.isdigit():

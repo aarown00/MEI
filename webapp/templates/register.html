@@ -142,7 +142,15 @@
             {{ form.password2 }}
             <small class="form-text text-muted" style="display: block; position: relative; text-align: left;">
                 <span style="position: absolute; left: -1em;">•</span>
-                Password should be strong and at least 8 characters.
+                Password must contain at least 8 characters.
+            </small>
+            <small class="form-text text-muted" style="display: block; position: relative; text-align: left;">
+                <span style="position: absolute; left: -1em;">•</span>
+                Password must not be common.
+            </small>
+            <small class="form-text text-muted" style="display: block; position: relative; text-align: left;">
+                <span style="position: absolute; left: -1em;">•</span>
+                Password must not be entirely numeric.
             </small>
         </div>
 

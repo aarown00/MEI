@@ -13,6 +13,8 @@
         position: relative;
         padding: 0;
         z-index: 600; /* Lower than sidebar and overlay */
+           
+
     }
     .card {
         border: none;
@@ -26,6 +28,7 @@
     .table {
         width: 100%;
         border-collapse: collapse;    
+        margin-top: 100px;
     }
     .table th,
     .table td {
@@ -61,17 +64,62 @@
     .btn-group {
         width: 150px; /* Adjust this value as needed */
     }
- 
 
+   
+    
 
 
 </style>
+
 
 <div class="container-fluid px-4">
     <h1 class="mt-4 mb-4">Request Status</h1>
     <ol class="breadcrumb mb-4">
         <li class="breadcrumb-item active">Please refer to this table to track the progress and approval of your requests.</li>
     </ol>
+
+
+    <div class="card" style="width: 78rem;">
+        <div class="card-header">
+            Status Map
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                <div class="d-flex align-items-center">
+                    <button type="button" class="btn btn-secondary btn-status">Waiting</button>
+                    <div class="ml-3 flex-grow-1"> - Waiting for Approval. Please wait for Admin to approve your request. You can still cancel request at this status.</div>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div class="d-flex align-items-center">
+                    <button type="button" class="btn btn-warning btn-status">Pending</button>
+                    <div class="ml-3 flex-grow-1"> - Approved by Admin. Request is now ongoing. Request cannot be cancelled beyond this point.</div>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div class="d-flex align-items-center">
+                    <button type="button" class="btn btn-success btn-status">Completed</button>
+                    <div class="ml-3 flex-grow-1"> - The request has been completed. You can move the items to history table.</div>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div class="d-flex align-items-center">
+                    <button type="button" class="btn btn-dark btn-status">Closed</button>
+                    <div class="ml-3 flex-grow-1"> - Completed record moved to history.</div>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div class="d-flex align-items-center">
+                    <button type="button" class="btn btn-danger btn-status">Cancelled</button>
+                    <div class="ml-3 flex-grow-1"> - Request cancelled. Moved to history</div>
+                </div>
+            </li>
+        </ul>
+    </div>
+    
+    
+    
+</br>
     <div class="card mb-4">
         <div class="card-header">
             <i class="fas fa-table me-1"></i>

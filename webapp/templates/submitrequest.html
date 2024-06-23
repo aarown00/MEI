@@ -1,13 +1,20 @@
 {% extends "base.html" %}
 
-
-
 {% block content %}
+    <style>
+        /* Optional: Adjust styling as needed */
+        .progress-container {
+            display: none;
+            margin-top: 20px;
+        }
+    </style>
+
     <div class="container">
         <div class="row">
             <div class="col-md-6 offset-md-3">
                 <h1 class="text-center">IT Request Form</h1>
-                <form method="POST" enctype="multipart/form-data">
+
+                <form id="submitForm" method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
                     <div class="form-group">
                         <label for="id_department">Department:</label>
@@ -33,17 +40,45 @@
                         <label for="id_upload">Attachment (Optional):</label> 
                         <p class="fw-semibold fs-6">Please upload PNG or JPG files for single attachments. If multiple files are required, please compile and upload them in PDF format.</p>
                         {{ form.upload }}
-                       
                     </div>
 
-                    
-                    
-                    
-                 
-                    </br>
+                    <!-- Progress Bar -->
+                    <div id="progressBar" class="progress-container">
+                        <div class="progress">
+                            <div id="progressBarFill" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                    </div>
+
+                    <!-- Notice Card -->
+                </br> 
+                    <div class="alert alert-warning mb-4">
+                        <p class="text-center mb-0">Your RTN# reference will also be sent to your email.</p>
+                    </div>
+
                     <button type="submit" class="btn btn-primary">Request</button>
                 </form>
             </div>
         </div>
     </div>
+
+    <!-- Add your JavaScript at the end of the body -->
+    <script>
+        document.getElementById("submitForm").addEventListener("submit", function() {
+            // Show the progress bar container
+            document.getElementById("progressBar").style.display = "block";
+
+            // Simulate progress
+            var progressBarFill = document.getElementById("progressBarFill");
+            var width = 0;
+            var interval = setInterval(function() {
+                if (width >= 100) {
+                    clearInterval(interval);
+                } else {
+                    width += 20; // Adjust increment speed as needed
+                    progressBarFill.style.width = width + "%";
+                    progressBarFill.setAttribute("aria-valuenow", width);
+                }
+            }, 500); // Adjust interval (milliseconds) for smoother or faster animation
+        });
+    </script>
 {% endblock %}

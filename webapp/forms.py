@@ -3,6 +3,11 @@ from django.contrib.auth.models import User
 from django import forms
 from .models import IT_Request
 from django.forms import ClearableFileInput
+from django.conf import settings
+import requests
+
+# Define your API key for Abstract API
+API_KEY = settings.ABSTRACT_API_KEY
 
 #Registration
 class RegisterForm(UserCreationForm):
@@ -40,8 +45,8 @@ class RegisterForm(UserCreationForm):
         username = self.cleaned_data.get('username')
         if not username.isdigit():
             raise forms.ValidationError("ID number should contain only digits.")
-        if len(username) > 10:
-            raise forms.ValidationError("ID number should contain up to 10 digits.")
+        if len(username) != 4:
+            raise forms.ValidationError("ID number should contain exactly 4 digits.")
         return username
     
     def clean_first_name(self):
@@ -55,6 +60,29 @@ class RegisterForm(UserCreationForm):
         if not last_name.isalpha():
             raise forms.ValidationError("Last name should contain only letters.")
         return last_name
+    
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        if not email.endswith('gmail.com'):
+            raise forms.ValidationError("Sorry, this system only accepts Gmail addresses.")
+        
+        # Check if email already exists in the database
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError("This email address already exists.")
+        
+        # Validate email using Abstract API
+        url = f"https://emailvalidation.abstractapi.com/v1/?api_key={API_KEY}&email={email}"
+        response = requests.get(url)
+
+        if response.status_code == 200:
+            data = response.json()
+            deliverability = data.get("deliverability")
+            if deliverability == "UNDELIVERABLE":
+                raise forms.ValidationError("The email address is not active.")
+        else:
+            raise forms.ValidationError("Failed to validate email address.")
+
+        return email
     
 #IT Request Form
 class IT_RequestForm(forms.ModelForm):

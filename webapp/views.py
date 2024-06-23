@@ -6,6 +6,7 @@ from. models import IT_Request
 from django.http import FileResponse
 from django.urls import reverse
 import os
+from django.core.mail import send_mail, BadHeaderError
 
 def unauthorized_user(request):
     return render(request, 'unauthorized.html')
@@ -105,9 +106,22 @@ def submitrequest_user(request, username=None):
                     it_request = form.save(commit=False)
                     it_request.user = request.user  # Set the user field
                     it_request.save()
+                    # Send email (attempt)
+                    try:
+                        send_mail(
+                            f"IT Request - Reference RTN#{it_request.id}",  # subject
+                            f"Request submitted! Your reference is RTN#{it_request.id}.\n\nPlease do not reply to this email.",  # message
+                            'meitrequestsystem@gmail.com',  # from email
+                            [request.user.email],  # to email
+                        )
+                    except BadHeaderError:
+                        pass  # Invalid header error; ignore and continue
+                    except Exception as e:
+                        messages.warning(request, "Failed to send RTN# to email. Contact admin for support. Please check table for RTN# instead.")
+
                     messages.warning(request, f"Request submitted! Please wait for admin approval. Your reference is RTN#{it_request.id}.")
                     return redirect('viewreview', username=request.user.username)
-
+                
             else:
                 form = IT_RequestForm()  # Create an empty form if the request is not POST
             return render(request, 'submitrequest.html', {'form': form})
@@ -117,6 +131,8 @@ def submitrequest_user(request, username=None):
         messages.error(request, "You Must Be Logged In First!")
         return redirect('login')
 	
+
+
 
 def viewreview_user(request, username=None):
     if request.user.is_authenticated:
@@ -169,12 +185,13 @@ def cancelrequest_user(request, pk):
 def approverequest_user(request, pk):
     print(f"Approve request received for pk={pk}")  # Debug statement
     it_request = get_object_or_404(IT_Request, pk=pk)
-    # Check if the user is the owner or a superuser
+    # Check if the user is a superuser
     if request.user.is_superuser:
         if it_request.status == 'Waiting':
             it_request.status = 'Pending'
             it_request.save()
             messages.success(request, f"RTN#{it_request.id} is approved. Status is now changed to (Pending)")
+  
         else:
             return HttpResponse("Request cannot be approved.")
     else:

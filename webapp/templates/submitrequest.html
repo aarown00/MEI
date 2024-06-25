@@ -7,6 +7,10 @@
             display: none;
             margin-top: 20px;
         }
+
+        .btn-bc {
+            width: 200px; /* Adjust this value as needed */
+        }
     </style>
 
     <div class="container">
@@ -55,7 +59,13 @@
                         <p class="text-center mb-0">Your RTN# reference will also be sent to your email.</p>
                     </div>
 
-                    <button type="submit" class="btn btn-primary">Request</button>
+                    <div class="d-flex justify-content-between mb-4">
+                        <button type="submit" class="btn btn-primary btn-bc"> <i class="fas fa-plus"></i> Submit Request</button>
+                        <a href="{% url 'viewreview' username=request.user.username %}" class="btn btn-danger btn-bc">
+                            <i class="fas fa-arrow-left"></i> Cancel
+                        </a>
+                    </div>
+
                 </form>
             </div>
         </div>

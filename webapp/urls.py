@@ -16,11 +16,15 @@ urlpatterns = [
    path('<str:username>/viewhistory/', views.viewhistory_user, name='viewhistory'),
    path('<str:username>/profile/', views.profile_user, name='viewprofile'),
    
-   #update status
-   path('it_request/<int:pk>/cancel/', views.cancelrequest_user, name='cancelrequest_user'),
+   #update status for admin only
    path('it_request/<int:pk>/approve/', views.approverequest_user, name='approverequest_user'),
    path('it_request/<int:pk>/done/', views.donerequest_user, name='donerequest_user'),
-   path('it_request/<int:pk>/close/', views.closerequest_user, name='closerequest_user'),
+
+   #update for employee and admin
+   path('it_request/<int:pk>/close/admin/', views.closerequest_admin, name='closerequest_admin'),
+   path('it_request/<int:pk>/close/employee/', views.closerequest_employee, name='closerequest_employee'),
+   path('it_request/<int:pk>/cancel/admin/', views.cancelrequest_admin, name='cancelrequest_admin'),
+   path('it_request/<int:pk>/cancel/employee/', views.cancelrequest_employee, name='cancelrequest_employee'),
 
    #media route
    path("media/user_uploads/<str:file>",views.secureFile, name="securefileupload")

@@ -77,10 +77,10 @@
 
 
 <div class="container-fluid px-4">
-    <h1 class="mt-4 mb-4">Employee Dashboard</h1>
+    <h1 class="mt-4 mb-4">Admin Dashboard</h1>
     <div class="d-flex justify-content-between align-items-center mb-4">
         <ol class="breadcrumb mb-0">
-            <li class="breadcrumb-item active">Please refer to this table to track the progress and approval of your requests.</li>
+            <li class="breadcrumb-item active">Please refer to this table to monitor and update employee issued requests.</li>
         </ol>
         <div>
             <a href="{% url 'submitrequest' username=request.user.username %}" class="btn btn-primary btn-bc mr-2">
@@ -112,7 +112,7 @@
                     </thead>
                     <tbody>
                         {% for it_request in it_requests %}
-                            {% if it_request.status == "Waiting" or it_request.status == "Pending" or it_request.status == "Completed" or it_request.status == "Closed_By_Admin" or it_request.status == "Cancelled_By_Admin" %}
+                            {% if it_request.status == "Waiting" or it_request.status == "Pending" or it_request.status == "Completed" %}
                             <tr>
                                 <td data-label="RTN#">
                                     <button class="btn btn-link" 
@@ -137,23 +137,31 @@
                                         <button type="button" class="btn btn-secondary btn-status">Waiting</button>
                                     {% elif it_request.status == 'Pending' %}
                                         <button type="button" class="btn btn-warning btn-status">Pending</button>
-                                    {% elif it_request.status == 'Closed_By_Admin' or it_request.status == 'Completed' %}
-                                        <button type="button" class="btn btn-success btn-status">Completed</button>
                                     {% else %}
-                                        <button type="button" class="btn btn-success btn-danger">Cancelled</button>
+                                        <button type="button" class="btn btn-success btn-status">Completed</button>
                                     {% endif %}
                                 </td>
                                     
-                                <td data-label="Action"> 
-                                    {% if it_request.status == 'Waiting' %}
-                                            <button type="button" class="btn btn-outline-danger btn-status1" onclick="confirmCancel({{ it_request.pk }})">Cancel</button>
-                                    {% elif it_request.status == 'Cancelled_By_Admin'%}
-                                            <button type="button" class="btn btn-outline-danger btn-status1" onclick="confirmCancelClose({{ it_request.pk }})">Close</button>
-                                    {% elif it_request.status == 'Completed' or it_request.status == 'Closed_By_Admin'%}
-                                            <button type="button" class="btn btn-outline-danger btn-status1" onclick="confirmClose({{ it_request.pk }})">Close</button>
+                                <td data-label="Action">
+                                    
+                                    {% if it_request.status == "Waiting" %}
+                                        
+                                    <div class="btn-group" role="group" aria-label="Approve or Cancel">
+                                        <button type="button" class="btn btn-outline-primary btn-status1" onclick="confirmApprove({{ it_request.pk }})">Approve</button>
+                                        <button type="button" class="btn btn-outline-danger btn-status1" onclick="confirmCancel({{ it_request.pk }})">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
+                                            <path d="M7.297 8l-4.13 4.132-.826-.824L6.47 8 2.34 3.824l.826-.824L7.297 7.15l4.132-4.13.824.826L8.124 8l4.13 4.132-.824.826-4.13-4.13-4.132 4.13-.826-.824L7.297 8z"/>
+                                        </svg>
+                                        </button>
+                                    </div>
+                                    
+                                    {% elif it_request.status == 'Pending'%}
+                                        <button type="button" class="btn btn-outline-primary btn-status1" onclick="confirmDone({{ it_request.pk }})">Done</button>
+
                                     {% else %}
-                                            None
-                                    {% endif %}  
+                                        <button type="button" class="btn btn-outline-danger btn-status1" onclick="confirmClose({{ it_request.pk }})">Close</button>
+                                    {% endif %}
+
                                 </td> 
                                                         
                             </tr>
@@ -229,19 +237,37 @@
     </div>
 </div>
 
-<!-- CANCEL CLOSE MODAL -->
-<div class="modal fade" id="cancelCloseModal" tabindex="-1" role="dialog" aria-labelledby="cancelCloseModalLabel" aria-hidden="true">
+<!-- APPROVE MODAL -->
+<div class="modal fade" id="approveModal" tabindex="-1" role="dialog" aria-labelledby="approveModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="cancelCloseModalLabel">Close Request</h5>
+                <h5 class="modal-title" id="approveModalLabel">Confirm Approval</h5>
             </div>
             <div class="modal-body" style="text-align: center;">
-                <p>Are you sure you want to close this request? This request will be moved to history.</p>
+                <p>Are you sure you want to approve this request? The status will be updated to pending.</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-                <button type="button" class="btn btn-danger" id="confirmCancelCloseBtn">Yes</button>
+                <button type="button" class="btn btn-primary" id="confirmApproveBtn">Yes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- COMPLETE MODAL -->
+<div class="modal fade" id="completeModal" tabindex="-1" role="dialog" aria-labelledby="completeModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="completeModalLabel">Update Request</h5>
+            </div>
+            <div class="modal-body" style="text-align: center;">
+             <p>Mark this request as done?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+                <button type="button" class="btn btn-primary" id="confirmDoneBtn">Yes</button>
             </div>
         </div>
     </div>
@@ -275,7 +301,8 @@
 <!-- UPDATE MODAL JS -->
 <script>
     let requestIdToCancel = null;
-    let requestIdToCancelClose = null;
+    let requestIdToApprove = null;
+    let requestIdToComplete = null;
     let requestIdToClose = null;
 
     function confirmCancel(requestId) {
@@ -283,9 +310,14 @@
         $('#cancelModal').modal('show');
     }
 
-    function confirmCancelClose(requestId) {
-        requestIdToCancelClose = requestId;
-        $('#cancelCloseModal').modal('show');
+    function confirmApprove(requestId) {
+        requestIdToApprove = requestId;
+        $('#approveModal').modal('show');
+    }
+
+    function confirmDone(requestId) {
+        requestIdToComplete = requestId;
+        $('#completeModal').modal('show');
     }
 
     function confirmClose(requestId) {
@@ -316,11 +348,12 @@
         }
     });
 
-    document.getElementById('confirmCancelCloseBtn').addEventListener('click', function () {
-        if (requestIdToCancelClose) {
+    document.getElementById('confirmApproveBtn').addEventListener('click', function () {
+        if (requestIdToApprove) {
             const form = document.createElement('form');
             form.method = 'POST';
-            form.action = `/it_request/${requestIdToCancelClose}/cancel/employee/`;
+            form.action = `/it_request/${requestIdToApprove}/approve/`;  // Adjust the URL as needed
+
             const csrfToken = document.createElement('input');
             csrfToken.type = 'hidden';
             csrfToken.name = 'csrfmiddlewaretoken';
@@ -332,6 +365,22 @@
         }
     });
 
+    document.getElementById('confirmDoneBtn').addEventListener('click', function () {
+        if (requestIdToComplete) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `/it_request/${requestIdToComplete}/done/`;  // Adjust the URL as needed
+
+            const csrfToken = document.createElement('input');
+            csrfToken.type = 'hidden';
+            csrfToken.name = 'csrfmiddlewaretoken';
+            csrfToken.value = '{{ csrf_token }}';  // Ensure you pass the CSRF token here
+
+            form.appendChild(csrfToken);
+            document.body.appendChild(form);
+            form.submit();
+        }
+    });
 
 
     document.getElementById('confirmCloseBtn').addEventListener('click', function () {

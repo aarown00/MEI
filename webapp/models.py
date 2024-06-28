@@ -13,7 +13,7 @@ class IT_Request(models.Model):
     EQ_TYPE_CHOICES = generate_choices('Desktop', 'Laptop', 'Printer', 'Network Devices', 'Peripherals')
     ISSUE_CHOICES = generate_choices('Account Creation/Deletion', 'Password Reset/Unlock', 'Server Access', 'Application Installation', 'Troubleshoot', 
                                      'Security Incident Report', 'Data Backup/Recovery', 'Hardware Installation', 'Network' )
-    STATUS_CHOICES = generate_choices('Waiting', 'Pending', 'Completed', 'Cancelled', 'Closed')
+    STATUS_CHOICES = generate_choices('Waiting', 'Pending', 'Completed', 'Cancelled_By_Employee', 'Cancelled_By_Admin', 'Closed_By_Employee', 'Closed_By_Admin')
     DEP_CHOICES = generate_choices('Human Resources (HR)', 'Finance/Accounting', 'Information Technology (IT)', 'Marketing/Sales', 'Operations', 'Engineering')
 
     # Model fields

@@ -45,13 +45,10 @@
 
       <nav id="navmenu" class="navmenu">
         <ul>
-          <li><a href="#services">About us</a></li>
+          
         </ul>
-        <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
+        <i class="mobile-nav-toggle d-none bi bi-list"></i>
       </nav>
-      {% if not request.user.is_authenticated %}
-        <a class="btn-getstarted flex-md-shrink-0" href="register">Register</a>
-      {% endif %}
 
     </div>
   </header>
@@ -65,21 +62,21 @@
         <div class="row gy-4">
           <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center">
             <h1 data-aos="fade-up">MEI System</h1>
-            <p data-aos="fade-up" data-aos-delay="100">Effortlessly Request and Manage IT Services with Our User-Friendly Platform.</p>
+            <p data-aos="fade-up" data-aos-delay="100">A centralized platform for employees to submit requests and admins to manage them. Control for admins, convenience for employees.</p>
             <div class="d-flex flex-column flex-md-row" data-aos="fade-up" data-aos-delay="200">
               {% if request.user.is_authenticated %}
               
                 <a href="{% url 'submitrequest' username=request.user.username %}" class="btn-get-started m-1">Submit<i class="bi bi-arrow-right"></i></a> 
                 <a href="{% url 'viewreview' username=request.user.username %}" class="btn-get-started m-1">View<i class="bi bi-arrow-right"></i></a>
                 <a href="{% url 'viewhistory' username=request.user.username %}" class="btn-get-started m-1">History<i class="bi bi-arrow-right"></i></a>
-            
-            
-                 
-              {% else %}
-                  <a href="login" class="btn-get-started">Log in <i class="bi bi-arrow-right"></i></a>
-              {% endif %}
+
+            {% else %}
+                <a href="register" class="btn-get-started m-1">Register <i class="bi bi-arrow-right"></i></a>
+                <a href="login" class="btn-get-started m-1">Log in <i class="bi bi-arrow-right"></i></a>
+            {% endif %}
               
             </div>
+            <p class="mt-5" data-aos="fade-up" data-aos-delay="300">For more details, explore our services below.</p>
           </div>
           <div class="col-lg-6 order-1 order-lg-2 hero-img" data-aos="zoom-out">
             <img src="static/img/hero-img.png" class="img-fluid animated" alt="">

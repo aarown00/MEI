@@ -56,10 +56,10 @@
 </style>
 
 <div class="container-fluid px-4">
-    <h1 class="mt-4 mb-4">Employee History</h1>
+    <h1 class="mt-4 mb-4">Admin History</h1>
     <div class="d-flex justify-content-between align-items-center mb-4">
         <ol class="breadcrumb mb-0">
-            <li class="breadcrumb-item active">This table contains records of all your requests that have been closed or cancelled.</li>
+            <li class="breadcrumb-item active">This table contains records of all requests that have been closed or cancelled.</li>
         </ol>
         <div>
             <a href="{% url 'submitrequest' username=request.user.username %}" class="btn btn-primary btn-bc mr-2">
@@ -92,7 +92,7 @@
                     </thead>
                     <tbody>
                         {% for it_request in it_requests %}
-                        {% if it_request.status == "Closed_By_Employee" or it_request.status == "Cancelled_By_Employee" %}
+                        {% if it_request.status == "Closed_By_Admin" or it_request.status == "Closed_By_Employee" or it_request.status == "Cancelled_By_Admin" or it_request.status == "Cancelled_By_Employee" %}
                         <tr>
                             <td data-label="RTN#">
                                 <button class="btn btn-link" 
@@ -113,9 +113,9 @@
 
                             <td data-label="Requested At">{{ it_request.formatted_requested_at }}</td>
                             <td data-label="Status">
-                                {% if it_request.status == "Closed_By_Employee" %}
+                                {% if it_request.status == "Closed_By_Admin" or it_request.status == "Closed_By_Employee" %}
                                     <button type="button" class="btn btn-dark btn-status">Closed</button>
-                                {% elif it_request.status == "Cancelled_By_Employee" %}
+                                {% elif it_request.status == "Cancelled_By_Admin" or it_request.status == "Cancelled_By_Employee" %}
                                     <button type="button" class="btn btn-danger btn-status">Cancelled</button>
                                 {% endif %}
                             </td>                           

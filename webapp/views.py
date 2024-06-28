@@ -106,18 +106,18 @@ def submitrequest_user(request, username=None):
                     it_request = form.save(commit=False)
                     it_request.user = request.user  # Set the user field
                     it_request.save()
-                    # Send email (attempt)
-                    try:
-                        send_mail(
-                            f"IT Request - Reference RTN#{it_request.id}",  # subject
-                            f"Request submitted! Your reference is RTN#{it_request.id}.\n\nPlease do not reply to this email.",  # message
-                            'meitrequestsystem@gmail.com',  # from email
-                            [request.user.email],  # to email
-                        )
-                    except BadHeaderError:
-                        pass  # Invalid header error; ignore and continue
-                    except Exception as e:
-                        messages.warning(request, "Failed to send RTN# to email. Contact admin for support. Please check table for RTN# instead.")
+                    # # Send email (attempt)
+                    # try:
+                    #     send_mail(
+                    #         f"IT Request - Reference RTN#{it_request.id}",  # subject
+                    #         f"Request submitted! Your reference is RTN#{it_request.id}.\n\nPlease do not reply to this email.",  # message
+                    #         'meitrequestsystem@gmail.com',  # from email
+                    #         [request.user.email],  # to email
+                    #     )
+                    # except BadHeaderError:
+                    #     pass  # Invalid header error; ignore and continue
+                    # except Exception as e:
+                    #     messages.warning(request, "Failed to send RTN# to email. Contact admin for support. Please check table for RTN# instead.")
 
                     messages.warning(request, f"Request submitted! Please wait for admin approval. Your reference is RTN#{it_request.id}.")
                     return redirect('viewreview', username=request.user.username)
@@ -133,21 +133,21 @@ def submitrequest_user(request, username=None):
 	
 
 
-
 def viewreview_user(request, username=None):
     if request.user.is_authenticated:
         if request.user.username == username:
             if request.user.is_superuser:
                 it_requests = IT_Request.objects.all().order_by('-requested_at')
+                return render(request, 'viewreview_admin.html', {'it_requests': it_requests})
             else:
                 it_requests = IT_Request.objects.filter(user=request.user).order_by('-requested_at')
-            return render(request, 'viewreview.html', {'it_requests': it_requests})
+                return render(request, 'viewreview.html', {'it_requests': it_requests})
         else:
             return redirect('unauthorized')
     else:
         messages.error(request, "You must be logged in first!")
         return redirect('login')
-    
+   
  
 
 def viewhistory_user(request, username=None):
@@ -155,9 +155,10 @@ def viewhistory_user(request, username=None):
         if request.user.username == username:
             if request.user.is_superuser:
                 it_requests = IT_Request.objects.all().order_by('-requested_at')
+                return render(request, 'viewhistory_admin.html', {'it_requests': it_requests})
             else:
                 it_requests = IT_Request.objects.filter(user=request.user).order_by('-requested_at')
-            return render(request, 'viewhistory.html', {'it_requests': it_requests})
+                return render(request, 'viewhistory.html', {'it_requests': it_requests})
         else:
             return redirect('unauthorized')
     else:
@@ -165,21 +166,6 @@ def viewhistory_user(request, username=None):
         return redirect('login')
     
 
-def cancelrequest_user(request, pk):
-    print(f"Cancel request received for pk={pk}")  # Debug statement
-    it_request = get_object_or_404(IT_Request, pk=pk)
-    # Check if the user is the owner or a superuser
-    if request.user == it_request.user or request.user.is_superuser:
-        if it_request.status == 'Waiting':
-            it_request.status = 'Cancelled'
-            it_request.save()
-            messages.warning(request, f"RTN#{it_request.id} is cancelled and has been moved to history.")
-        else:
-            return HttpResponse("Request cannot be cancelled.")
-    else:
-        return HttpResponse("You are not authorized to perform this action.")
-    
-    return redirect('viewreview', username=request.user.username)
 
 
 def approverequest_user(request, pk):
@@ -187,29 +173,66 @@ def approverequest_user(request, pk):
     it_request = get_object_or_404(IT_Request, pk=pk)
     # Check if the user is a superuser
     if request.user.is_superuser:
-        if it_request.status == 'Waiting':
-            it_request.status = 'Pending'
-            it_request.save()
-            messages.success(request, f"RTN#{it_request.id} is approved. Status is now changed to (Pending)")
-  
-        else:
+        if it_request.status != 'Waiting':
             return HttpResponse("Request cannot be approved.")
+        
+        it_request.status = 'Pending'
+        it_request.save()
+        messages.success(request, f"RTN#{it_request.id} is approved. Status is now changed to (Pending)")
     else:
         return HttpResponse("You are not authorized to perform this action.")
     
     return redirect('viewreview', username=request.user.username)
+
+
 
 def donerequest_user(request, pk):
     print(f"Complete request received for pk={pk}")  # Debug statement
     it_request = get_object_or_404(IT_Request, pk=pk)
-    # Check if the user is the owner or a superuser
+    # Check if the user is a superuser
     if request.user.is_superuser:
-        if it_request.status == 'Pending':
-            it_request.status = 'Completed'
-            it_request.save()
-            messages.success(request, f"RTN#{it_request.id} is now marked as done. Status is now changed to (Completed)")
-        else:
+        if it_request.status != 'Pending':
             return HttpResponse("Request cannot be updated.")
+        
+        it_request.status = 'Completed'
+        it_request.save()
+        messages.success(request, f"RTN#{it_request.id} is now marked as done. Status is now changed to (Completed)")
+    else:
+        return HttpResponse("You are not authorized to perform this action.")
+    
+    return redirect('viewreview', username=request.user.username)
+
+
+def closerequest_employee(request, pk):
+    print(f"Close request received for pk={pk} by employee")  # Debug statement
+    it_request = get_object_or_404(IT_Request, pk=pk)
+    
+    # Check if the user is the owner
+    if request.user == it_request.user:
+        if it_request.status not in ['Completed', 'Closed_By_Admin']:
+            return HttpResponse("Request cannot be closed.")
+        
+        it_request.status = 'Closed_By_Employee'
+        it_request.save()
+        messages.success(request, f"RTN#{it_request.id} is closed and has been moved to history.")
+    else:
+        return HttpResponse("You are not authorized to perform this action.")
+    
+    return redirect('viewreview', username=request.user.username)
+
+
+def closerequest_admin(request, pk):
+    print(f"Close request received for pk={pk} by admin")  # Debug statement
+    it_request = get_object_or_404(IT_Request, pk=pk)
+    
+    # Check if the user is a superuser
+    if request.user.is_superuser:
+        if it_request.status != 'Completed':
+            return HttpResponse("Request cannot be closed.")
+        
+        it_request.status = 'Closed_By_Admin'
+        it_request.save()
+        messages.success(request, f"RTN#{it_request.id} is closed and has been moved to history.")
     else:
         return HttpResponse("You are not authorized to perform this action.")
     
@@ -217,17 +240,37 @@ def donerequest_user(request, pk):
 
 
 
-def closerequest_user(request, pk):
-    print(f"Closed request received for pk={pk}")  # Debug statement
+def cancelrequest_employee(request, pk):
+    print(f"Cancel request received for pk={pk} by employee")  # Debug statement
     it_request = get_object_or_404(IT_Request, pk=pk)
-    # Check if the user is the owner or a superuser
-    if request.user == it_request.user or request.user.is_superuser:
-        if it_request.status == 'Completed':
-            it_request.status = 'Closed'
-            it_request.save()
-            messages.success(request, f"RTN#{it_request.id} is closed and has been moved to history.")
-        else:
-            return HttpResponse("Request cannot be closed.")
+
+    # Check if the user is the owner
+    if request.user == it_request.user:
+        if it_request.status not in ['Waiting', 'Cancelled_By_Admin']:
+            return HttpResponse("Request cannot be cancelled.")
+        
+        it_request.status = 'Cancelled_By_Employee'
+        it_request.save()
+        messages.warning(request, f"RTN#{it_request.id} is cancelled and has been moved to history.")
+    else:
+        return HttpResponse("You are not authorized to perform this action.")
+    
+    return redirect('viewreview', username=request.user.username)
+
+
+
+def cancelrequest_admin(request, pk):
+    print(f"Cancel request received for pk={pk} by admin")  # Debug statement
+    it_request = get_object_or_404(IT_Request, pk=pk)
+
+    # Check if the user is a superuser
+    if request.user.is_superuser:
+        if it_request.status != 'Waiting':
+            return HttpResponse("Request cannot be cancelled.")
+        
+        it_request.status = 'Cancelled_By_Admin'
+        it_request.save()
+        messages.warning(request, f"RTN#{it_request.id} is cancelled and has been moved to history.")
     else:
         return HttpResponse("You are not authorized to perform this action.")
     

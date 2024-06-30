@@ -106,18 +106,18 @@ def submitrequest_user(request, username=None):
                     it_request = form.save(commit=False)
                     it_request.user = request.user  # Set the user field
                     it_request.save()
-                    # # Send email (attempt)
-                    # try:
-                    #     send_mail(
-                    #         f"IT Request - Reference RTN#{it_request.id}",  # subject
-                    #         f"Request submitted! Your reference is RTN#{it_request.id}.\n\nPlease do not reply to this email.",  # message
-                    #         'meitrequestsystem@gmail.com',  # from email
-                    #         [request.user.email],  # to email
-                    #     )
-                    # except BadHeaderError:
-                    #     pass  # Invalid header error; ignore and continue
-                    # except Exception as e:
-                    #     messages.warning(request, "Failed to send RTN# to email. Contact admin for support. Please check table for RTN# instead.")
+                    # Send email (attempt)
+                    try:
+                        send_mail(
+                            f"IT Request - Reference RTN#{it_request.id}",  # subject
+                            f"Request submitted! Your reference is RTN#{it_request.id}.\n\nPlease do not reply to this email.",  # message
+                            'meitrequestsystem@gmail.com',  # from email
+                            [request.user.email],  # to email
+                        )
+                    except BadHeaderError:
+                        pass  # Invalid header error; ignore and continue
+                    except Exception as e:
+                        messages.warning(request, "Failed to send RTN# to email. Contact admin for support. Please check table for RTN# instead.")
 
                     messages.warning(request, f"Request submitted! Please wait for admin approval. Your reference is RTN#{it_request.id}.")
                     return redirect('viewreview', username=request.user.username)

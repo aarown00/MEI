@@ -1,8 +1,21 @@
+
+
 {% extends "base.html" %}
+
+{% load static %}
 
 {% block content %}
 
 <style>
+
+    body {
+
+        background-image: url('{% static "img/bg.jpg" %}');
+        background-size: cover; /* Adjust to cover the entire container */
+        background-position: center; /* Center the image */
+        background-repeat: no-repeat; /* Prevent the image from repeating */        
+    }
+    
     /* Styles for the login card */
     .login-card {
         max-width: 450px;

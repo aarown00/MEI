@@ -1,83 +1,104 @@
 {% extends "base.html" %}
 
 {% block content %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Profile</title>
-    <style>
-        .profile-container {
-            max-width: 600px;
-            margin: 20px auto;
-            background-color: #fff;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        .profile-container h1 {
-            font-size: 24px;
-            margin-bottom: 10px;
-            border-bottom: 1px solid #ccc;
-            padding-bottom: 10px;
-        }
-        .profile-field {
-            margin-bottom: 10px;
-        }
-        .profile-field label {
-            font-weight: bold;
-            display: inline-block;
-            width: 120px;
-        }
-        .profile-field p {
-            margin: 0;
-        }
-        .text-end {
-            text-align: right; /* Align button to the right */
-        }
-        .btn {
-            display: inline-block;
-            padding: 8px 16px;
-            text-decoration: none;
-            border-radius: 5px;
-            
-        }
-        
-    </style>
-</head>
-<body>
-    <div class="profile-container">
-        <h1>User Profile</h1>
-        <div class="profile-field">
-            <label>User:</label>
+<style>
+    .profile-flex-container {
+        display: flex;
+        justify-content: space-between;
+    }
+    .profile-card, .profile-accordion {
+        flex: 1;
+        max-width: 48%;
+        margin: 0.5%;
+    }
+    .profile-accordion .accordion-item {
+        margin-bottom: 1rem;
+    }
+
+</style>
+
+<div class="card">
+    <h5 class="card-header bg-primary-subtle">Profile Overview</h5>
+    <div class="card-body">
+        <h5 class="card-title">Hi there,<strong> {{ user.first_name }}</strong></h5>
+        <p class="card-text">Stay updated on your IT support requests and streamline your tasks.</p>
+        <a href="{% url 'viewreview' username=request.user.username %}" class="btn btn-primary">
+            Go to Dashboard <i class="fas fa-arrow-right"></i>
+        </a>
+    </div>
+</div>
+<br>
+
+<div class="profile-flex-container">
+    <div class="card mb-3 profile-card">
+        <div class="card-header bg-primary-subtle">Profile Credentials</div>
+        <div class="card-body">
+            <h5 class="card-title">User:</h5> 
             {% if user.is_superuser %}
-                <p>Admin</p>
+                <p class="card-text">Admin</p>
             {% else %}
-                <p>Employee</p>
+                <p class="card-text">Employee</p>
             {% endif %}
-        </div>
-        <div class="profile-field">
-            <label>Username:</label>
-            <p>{{ user.username }}</p>
-        </div>
-        <div class="profile-field">
-            <label>Full Name:</label>
-            <p>{{ user.get_full_name }}</p>
-        </div>
-        <div class="profile-field">
-            <label>Email:</label>
-            <p>{{ user.email }}</p>
-        </div>
-        <!-- Additional fields from Profile model can be added here -->
-        <div class="text-end">
-            <a href="{% url 'viewreview' username=request.user.username %}" class="btn btn-danger">
-                <i class="fas fa-arrow-left"></i> Back
-            </a>
+
+            <h5 class="card-title">Employee ID:</h5> 
+            <p class="card-text">{{ user.username }}</p>
+
+            <h5 class="card-title">Name:</h5> 
+            <p class="card-text">{{ user.get_full_name }}</p>
+
+            <h5 class="card-title">Email:</h5> 
+            <p class="card-text">{{ user.email }}</p>
         </div>
     </div>
-</body>
-</html>
 
+    <div class="accordion profile-accordion" id="accordionPanelsStayOpenExample">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+                    1. How Can I Submit and Monitor My IT Requests?
+                </button>
+            </h2>
+            <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionPanelsStayOpenExample">
+                <div class="accordion-body">
+                    <strong> Submitting an IT Request </strong> </br>
+                    Simply navigate to the "Submit" section, fill in the required details, and click "Request". Ticket No. will also be sent to your email. </br> </br>
+
+                    <strong> Monitoring Your Requests </strong> </br>
+                    You can monitor the status of your IT requests through the "View" dashboard. This section provides updates on the progress and current status of each request you have submitted.
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingTwo">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
+                    2. Can I Cancel My IT Request?
+                </button>
+            </h2>
+            <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionPanelsStayOpenExample">
+                <div class="accordion-body">
+                    <strong> Cancellation Policy </strong> </br>
+                    You can cancel your IT request only if its status is<code> "Waiting."</code> Once the request moves to<code> "Pending"</code> or<code> "Completed"</code>, cancellation is no longer possible. </br> </br>
+                    <strong> How to Cancel a Request </strong> </br>
+                    To cancel a request, go to the "View" dashboard, find the request with the<code> "Waiting"</code> status, and select the<code> "Cancel"</code> option. This action will remove the request from the active list and move it to the history section.
+                </div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingThree">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false" aria-controls="panelsStayOpen-collapseThree">
+                    3. What Happens to Completed and Closed Requests?
+                </button>
+            </h2>
+            <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionPanelsStayOpenExample">
+                <div class="accordion-body">
+                    <strong> Request Status Management </strong> </br>
+                    Admins are responsible for updating the status of IT requests to ensure accurate tracking and progress updates. Employees can also mark their completed requests as<code> "Closed"</code>. </br> </br>
+
+                    <strong> Closing Completed Requests </strong> </br>
+                    Once a request is marked as<code> "Completed"</code>, it can be closed by either the admin or the employee. When a request is closed, its status is updated to<code> "Closed"</code> and it is moved to the history section.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

@@ -11,6 +11,7 @@
         .btn-bc {
             width: 200px; /* Adjust this value as needed */
         }
+
     </style>
 
     <div class="container">
@@ -60,7 +61,7 @@
                     </div>
 
                     <div class="d-flex justify-content-between mb-4">
-                        <button type="submit" class="btn btn-primary btn-bc"> <i class="fas fa-plus"></i> Submit Request</button>
+                        <button type="submit" class="btn btn-primary btn-hover btn-bc"> <i class="fas fa-plus"></i> Submit Request</button>
                         <a href="{% url 'viewreview' username=request.user.username %}" class="btn btn-danger btn-bc">
                             <i class="fas fa-arrow-left"></i> Cancel
                         </a>

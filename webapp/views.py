@@ -11,7 +11,6 @@ from django.core.mail import send_mail, BadHeaderError
 def unauthorized_user(request):
     return render(request, 'unauthorized.html')
 
-
 def secureFile(request, file):
     
     document = get_object_or_404(IT_Request,upload="user_uploads/"+file)

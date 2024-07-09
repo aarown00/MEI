@@ -4,7 +4,7 @@ from django import forms
 from .models import IT_Request
 from django.forms import ClearableFileInput
 from django.conf import settings
-import requests
+import requests, re
 
 # Define your API key for Abstract API
 API_KEY = settings.ABSTRACT_API_KEY
@@ -53,14 +53,14 @@ class RegisterForm(UserCreationForm):
     
     def clean_first_name(self):
         first_name = self.cleaned_data.get('first_name')
-        if not first_name.isalpha():
-            raise forms.ValidationError("First name should contain only letters.")
+        if not re.match(r'^[A-Za-z]+(?: [A-Za-z]+)*$', first_name):
+            raise forms.ValidationError("First name should contain only letters and single spaces.")
         return first_name
 
     def clean_last_name(self):
         last_name = self.cleaned_data.get('last_name')
-        if not last_name.isalpha():
-            raise forms.ValidationError("Last name should contain only letters.")
+        if not re.match(r'^[A-Za-z]+(?: [A-Za-z]+)*$', last_name):
+            raise forms.ValidationError("Last name should contain only letters and single spaces.")
         return last_name
     
     def clean_email(self):

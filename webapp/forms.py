@@ -49,6 +49,8 @@ class RegisterForm(UserCreationForm):
             raise forms.ValidationError("ID number should contain only digits.")
         if len(username) != 4:
             raise forms.ValidationError("ID number should contain exactly 4 digits.")
+        if User.objects.filter(username=username).exists():
+            raise forms.ValidationError("A user with that ID number already exists.")
         return username
     
     def clean_first_name(self):

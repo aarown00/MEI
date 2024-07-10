@@ -162,4 +162,4 @@ EMAIL_HOST_USER = 'meitrequestsystem@gmail.com'
 EMAIL_HOST_PASSWORD = 'ezxc qvxa sfgl sxjb'
 EMAIL_USE_TLS = True
 
-ABSTRACT_API_KEY = '84d4efc208ac480da7f41135ff10dd8a'
+ABSTRACT_API_KEY = 'e501de66e6b448c5b7d60b7f849f82e2'

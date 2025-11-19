@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import os
-#import dj_database_url
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -28,6 +28,9 @@ SECRET_KEY = 'django-insecure-bdt6%r4&of=07&x*+ibn4t8-l8ur0&v$46so@mw_ccnf!0s+mo
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
+CSRF_TRUSTED_ORIGINS = ['https://*.onrender.com',
+                        'https://*.ngrok-free.app',
+                        ]
 
 
 # Application definition
@@ -78,21 +81,35 @@ WSGI_APPLICATION = 'itreq.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'meidb',
+#         'USER': 'aaronmart',
+#         'PASSWORD': 'pass123',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+
+#      }
+#  }
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'meidb',
-        'USER': 'aaronmart',
-        'PASSWORD': 'pass123',
-        'HOST': 'localhost',
+        'NAME': 'neondb',                 # PGDATABASE
+        'USER': 'neondb_owner',           # PGUSER
+        'PASSWORD': 'npg_HCIuwxbj5Z6R',  # PGPASSWORD
+        'HOST': 'ep-old-pine-ah7carv8-pooler.c-3.us-east-1.aws.neon.tech',  # PGHOST
         'PORT': '5432',
+        'OPTIONS': {
+            'sslmode': 'require',          # PGSSLMODE
+        },
+    }
+}
 
-     }
- }
 
-# Parse the database URL
+# # Parse the database URL
 
-# database_url = os.environ.get('DATABASE_URL', 'postgres://uedlu0t14rdk4c:p4d79ee017999777f2cd065faa3be4aeffdc8d69909b4c1e30550bf4854ebc8ed@c3gtj1dt5vh48j.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/d3qckd1d7mng6t')
+# database_url = os.environ.get('DATABASE_URL', 'postgresql://postgres:[sUk69milena]@db.rudcrgrbqdaoihagalrr.supabase.co:5432/postgres')
 
 # # Update the DATABASES setting using dj_database_url
 # DATABASES = {
@@ -140,6 +157,8 @@ STATICFILES_DIRS = [
 
 # The directory where collectstatic will gather static files for deployment.
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
 

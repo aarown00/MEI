@@ -111,7 +111,7 @@ def submitrequest_user(request, username=None):
                         send_mail(
                             f"IT Request - Reference RTN#{it_request.id}",  # subject
                             f"Request submitted! Your reference is RTN#{it_request.id}.\n\nPlease do not reply to this email.",  # message
-                            settings.EMAIL_HOST,  # from email
+                            settings.EMAIL_HOST_USER,  # from email
                             [request.user.email],  # to email
                         )
                     except BadHeaderError:

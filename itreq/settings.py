@@ -27,11 +27,8 @@ SECRET_KEY = 'django-insecure-bdt6%r4&of=07&x*+ibn4t8-l8ur0&v$46so@mw_ccnf!0s+mo
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
-CSRF_TRUSTED_ORIGINS = ['https://*.onrender.com',
-                        'https://*.ngrok-free.app',
-                        ]
-
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'mei-itreq.up.railway.app']
+CSRF_TRUSTED_ORIGINS = ['https://mei-itreq.up.railway.app']
 
 # Application definition
 
@@ -81,40 +78,27 @@ WSGI_APPLICATION = 'itreq.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'meidb',
-        'USER': 'aaronmart',
-        'PASSWORD': 'pass123',
-        'HOST': 'localhost',
-        'PORT': '5432',
-
-     }
- }
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'neondb',                 # PGDATABASE
-#         'USER': 'neondb_owner',           # PGUSER
-#         'PASSWORD': 'password',  # PGPASSWORD
-#         'HOST': 'ep-old-pine-ah7carv8-pooler.c-3.us-east-1.aws.neon.tech',  # PGHOST
+#         'NAME': 'meidb',
+#         'USER': 'aaronmart',
+#         'PASSWORD': 'pass123',
+#         'HOST': 'localhost',
 #         'PORT': '5432',
-#         'OPTIONS': {
-#             'sslmode': 'require',          # PGSSLMODE
-#         },
-#     }
-# }
 
+#      }
+#  }
 
-# # Parse the database URL
-
-# database_url = os.environ.get('DATABASE_URL', 'postgresql://postgres:[password]@db.rudcrgrbqdaoihagalrr.supabase.co:5432/postgres')
-
-# # Update the DATABASES setting using dj_database_url
 # DATABASES = {
-#     'default': dj_database_url.config(default=database_url)
-# }
+#        'default': dj_database_url.config(
+#            default=""
+#        )
+#    }
+
+DATABASES = {
+          'default': dj_database_url.config(default=os.getenv("DATABASE_URL"))
+      }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -175,10 +159,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #email
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'meitrequestsystem@gmail.com'
-EMAIL_HOST_PASSWORD = 'ezxc qvxa sfgl sxjb'
+EMAIL_HOST = os.environ.get('EMAIL_HOST')
+EMAIL_PORT = os.environ.get('EMAIL_PORT')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = True
 
-ABSTRACT_API_KEY = 'e501de66e6b448c5b7d60b7f849f82e2'
+ABSTRACT_API_KEY = os.environ.get('ABSTRACT_API_KEY')

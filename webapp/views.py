@@ -7,6 +7,7 @@ from django.http import FileResponse
 from django.urls import reverse
 import os
 from django.core.mail import send_mail, BadHeaderError
+from django.conf import settings
 
 def unauthorized_user(request):
     return render(request, 'unauthorized.html')
@@ -110,7 +111,7 @@ def submitrequest_user(request, username=None):
                         send_mail(
                             f"IT Request - Reference RTN#{it_request.id}",  # subject
                             f"Request submitted! Your reference is RTN#{it_request.id}.\n\nPlease do not reply to this email.",  # message
-                            'meitrequestsystem@gmail.com',  # from email
+                            settings.EMAIL_HOST,  # from email
                             [request.user.email],  # to email
                         )
                     except BadHeaderError:

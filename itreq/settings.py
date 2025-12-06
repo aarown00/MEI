@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-bdt6%r4&of=07&x*+ibn4t8-l8ur0&v$46so@mw_ccnf!0s+mo'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'mei-itreq.up.railway.app']
 CSRF_TRUSTED_ORIGINS = ['https://mei-itreq.up.railway.app']

@@ -92,7 +92,7 @@ DATABASES = {
 
 # Parse the database URL
 
-# database_url = os.environ.get('DATABASE_URL', 'postgres://uedlu0t14rdk4c:p4d79ee017999777f2cd065faa3be4aeffdc8d69909b4c1e30550bf4854ebc8ed@c3gtj1dt5vh48j.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/d3qckd1d7mng6t')
+# database_url = os.environ.get('DATABASE_URL', '')
 
 # # Update the DATABASES setting using dj_database_url
 # DATABASES = {
@@ -152,14 +152,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Correct
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-#email
-
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'meitrequestsystem@gmail.com'
-EMAIL_HOST_PASSWORD = 'ezxc qvxa sfgl sxjb'
-EMAIL_USE_TLS = True
 
 ABSTRACT_API_KEY = 'e501de66e6b448c5b7d60b7f849f82e2'

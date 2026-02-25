@@ -41,15 +41,10 @@ def profile_user(request, username=None):
         return redirect(reverse('login'))  # Redirect to the login URL
 
 
-
-def home(request):
-    return render(request, 'home.html')
-    
-
 def login_user(request):
 
     if request.user.is_authenticated:
-       return HttpResponse("You are already authenticated. Please log out first.")
+       return redirect('viewreview', username=request.user.username)
        
 
     if request.method == 'POST':

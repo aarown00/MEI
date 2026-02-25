@@ -4,7 +4,7 @@ from .import views
 
 urlpatterns = [
    #static url route
-   path('', views.home, name='home'),
+   path('', views.login_user, name='root'),
    path('login/', views.login_user, name='login'),
    path('logout/', views.logout_user, name='logout'),
    path('register/', views.register_user, name='register'),

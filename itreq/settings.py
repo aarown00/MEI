@@ -25,10 +25,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-bdt6%r4&of=07&x*+ibn4t8-l8ur0&v$46so@mw_ccnf!0s+mo'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'mei-itreq.up.railway.app']
-CSRF_TRUSTED_ORIGINS = ['https://mei-itreq.up.railway.app']
+ALLOWED_HOSTS = ['*']
+# CSRF_TRUSTED_ORIGINS = ['*']
 
 # Application definition
 
@@ -51,7 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'webapp.middleware.Redirect404Middleware',  
+#    'webapp.middleware.Redirect404Middleware',  
 ]
 
 
@@ -79,17 +79,17 @@ WSGI_APPLICATION = 'itreq.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'meidb',
-#         'USER': 'aaronmart',
-#         'PASSWORD': 'pass123',
-#         'HOST': 'localhost',
-#         'PORT': '5432',
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'meidb',
+        'USER': 'aaronmart',
+        'PASSWORD': 'pass123',
+        'HOST': 'localhost',
+        'PORT': '5432',
 
-#      }
-#  }
+     }
+ }
 
 # DATABASES = {
 #        'default': dj_database_url.config(
@@ -97,9 +97,9 @@ WSGI_APPLICATION = 'itreq.wsgi.application'
 #        )
 #    }
 
-DATABASES = {
-          'default': dj_database_url.config(default=os.getenv("DATABASE_URL"))
-      }
+# DATABASES = {
+#           'default': dj_database_url.config(default=os.getenv("DATABASE_URL"))
+#       }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators

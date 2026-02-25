@@ -11,9 +11,14 @@ API_KEY = settings.ABSTRACT_API_KEY
 
 #Registration
 class RegisterForm(UserCreationForm):
-    email = forms.EmailField(label="", widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'Email Address'}))
-    first_name = forms.CharField(label="", max_length=100, widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'First Name'}))
-    last_name = forms.CharField(label="", max_length=100, widget=forms.TextInput(attrs={'class':'form-control', 'placeholder':'Last Name'}))
+    _input_class = (
+        "block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 "
+        "text-slate-900 shadow-sm placeholder-slate-400 "
+        "focus:border-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-500/20"
+    )
+    email = forms.EmailField(label="", widget=forms.TextInput(attrs={'class': _input_class, 'placeholder': 'Email Address'}))
+    first_name = forms.CharField(label="", max_length=100, widget=forms.TextInput(attrs={'class': _input_class, 'placeholder': 'First Name'}))
+    last_name = forms.CharField(label="", max_length=100, widget=forms.TextInput(attrs={'class': _input_class, 'placeholder': 'Last Name'}))
 
     class Meta:
         model = User
@@ -22,24 +27,24 @@ class RegisterForm(UserCreationForm):
     def __init__(self, *args, **kwargs):
         super(RegisterForm, self).__init__(*args, **kwargs)
         self.fields['username'].widget.attrs.update({
-            'class': 'form-control', 
+            'class': self._input_class,
             'placeholder': 'Employee ID'
         })
         self.fields['username'].label = ''
 
         self.fields['password1'].widget.attrs.update({
-            'class': 'form-control', 
+            'class': self._input_class,
             'placeholder': 'Password'
         })
         self.fields['password1'].label = ''
         self.fields['password1'].help_text = ''
 
         self.fields['password2'].widget.attrs.update({
-            'class': 'form-control', 
+            'class': self._input_class,
             'placeholder': 'Confirm Password'
         })
         self.fields['password2'].label = ''
-        self.fields['password2'].help_text = '<span class="form-text text-muted"><small>Enter the same password as before, for verification.</small></span>'
+        self.fields['password2'].help_text = ''
 
    
    

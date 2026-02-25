@@ -1,0 +1,56 @@
+.modal-body {
+    white-space: pre-wrap; /* Ensure long text in modal is wrapped */
+    word-wrap: break-word;
+}
+.card {
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    font-weight: bold;
+}
+.table {
+    width: 100%;
+    border-collapse: collapse;    
+    margin-top: 100px;
+}
+.table th,
+.table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #dee2e6;
+}
+.table th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+.table tbody tr:hover {
+    background-color: #f1f1f1;
+}
+.btn-link {
+    color: #007bff;
+    cursor: pointer;
+}
+.no-underline {
+    color: #007bff;
+    text-decoration: none;
+    cursor: pointer;
+}
+.btn-status {
+    width: 120px; /* Adjust this value as needed */
+}
+
+.btn-status1 {
+    width: 150px; /* Adjust this value as needed */
+}
+
+.btn-group {
+    width: 150px; /* Adjust this value as needed */
+}
+
+.btn-bc {
+    width: 200px; /* Adjust this value as needed */
+}

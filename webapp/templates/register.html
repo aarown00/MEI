@@ -3,187 +3,122 @@
 {% load static %}
 
 {% block content %}
-<style>
-
-
-    body {
-
-        background-image: url('{% static "img/bg.jpg" %}');
-        background-size: cover; /* Adjust to cover the entire container */
-        background-position: center; /* Center the image */
-        background-repeat: no-repeat; /* Prevent the image from repeating */        
-    }
-
-    /* Styles for the register card */
-    .register-card {
-        max-width: 450px;
-        margin: 0 auto;
-        margin-top: 100px;
-        padding: 20px;
-        border-radius: 10px;
-        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        color: #333333;
-        background-color: #ffffff;
-        text-align: center;
-        
-    }
-
-    /* Ensuring form controls within the register card have the correct styles */
-    .register-card .form-control {
-        background-color: #ffffff;
-        color: #333333;
-        border: 1px solid #ccc;
-        padding: 10px;
-        width: 100%;
-        box-sizing: border-box;
-        margin-bottom: 10px;
-        transition: background-color 0.3s, border-color 0.3s;
-    }
-
-    /* Focus and active states for form controls within the register card */
-    .register-card .form-control:focus,
-    .register-card .form-control:active {
-        background-color: #ffffff !important;
-        color: #333333 !important;
-        border-color: #333333;
-        outline: none;
-    }
-
-    /* Placeholder styling */
-    .register-card .form-control::placeholder {
-        color: #999999;
-
-    }
-
-    /* Button styling */
-    .btn-secondary {
-        background-color: #333333;
-        color: #ffffff;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 5px;
-        cursor: pointer;
-        width: 100%;
-    }
-
-    .btn-secondary:hover {
-        background-color: #555555;
-    }
-
-    /* Heading styling */
-    .register-card h1 {
-        color: #333333;
-        margin-bottom: 20px;
-    }
-
-    .register-card .signup-link {
-        margin-top: 15px;
-        display: block;
-        color: #333333;
-        text-decoration: underline;
-        font-size: 14px;
-    }
-
-    .register-card .signup-link:hover {
-        text-decoration: underline;
-    }
-
-    
-</style>
-
-{% if form.errors %}
-<div class="alert alert-warning alert-dismissible fade show" role="alert">
-    <ul>
-        {% for field in form %}
-            {% for error in field.errors %}
-                <li>{{ error }}</li>
-            {% endfor %}
-        {% endfor %}
-        {% for error in form.non_field_errors %}
-            <li>{{ error }}</li>
-        {% endfor %}
-    </ul>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-{% endif %}
-
-<div class="register-card">
-    <h1>Register</h1>
-
-    <form id="RegisterForm" method="POST" action="">
-        {% csrf_token %}
-        
-        <div class="mb-3">
-            {{ form.username }}
-            <small class="form-text text-muted" style="display: block; position: relative; text-align: left;">
-                <span style="position: absolute; left: -1em;">•</span>
-                Please enter ID number consists of 4 digits.
-              </small>
-
-            
-        </div>
-        <div class="mb-3">
-            {{ form.first_name }}
-        </div>
-        <div class="mb-3">
-            {{ form.last_name }}
-            <small class="form-text text-muted" style="display: block; position: relative; text-align: left;">
-                <span style="position: absolute; left: -1em;">•</span>
-                Name only accepts letters.
-            </small>
-        </div>
-        <div class="mb-3">
-            {{ form.email }}
-            <small class="form-text text-muted" style="display: block; position: relative; text-align: left;">
-                <span style="position: absolute; left: -1em;">•</span>
-                Please enter an active gmail address.
-            </small>
-            <small class="form-text text-muted" style="display: block; position: relative; text-align: left;">
-                <span style="position: absolute; left: -1em;">•</span>
-                Please enter an unregistered email address.
-            </small>
-            <small class="form-text text-muted" style="display: block; position: relative; text-align: left;">
-                <span style="position: absolute; left: -1em;">•</span>
-                The email will be used for receiving RTN# reference.
-            </small>
-        </div>
-        <div class="mb-3">
-            {{ form.password1 }}
-        </div>
-        <div class="mb-3">
-            {{ form.password2 }}
-            <small class="form-text text-muted" style="display: block; position: relative; text-align: left;">
-                <span style="position: absolute; left: -1em;">•</span>
-                Password must contain at least 8 characters.
-            </small>
-            <small class="form-text text-muted" style="display: block; position: relative; text-align: left;">
-                <span style="position: absolute; left: -1em;">•</span>
-                Password must not be common.
-            </small>
-            <small class="form-text text-muted" style="display: block; position: relative; text-align: left;">
-                <span style="position: absolute; left: -1em;">•</span>
-                Password must not be entirely numeric.
-            </small>
-        </div>
-
-        <!-- Progress Bar -->
-        <div id="progressBar" class="progress-container">
-            <div class="progress">
-                <div id="progressBarFill" class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+<div class="mx-auto max-w-4xl py-6 sm:py-10">
+  <div class="relative overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+    <div class="grid lg:grid-cols-2">
+      <div class="relative hidden lg:block">
+        <img src="{% static 'img/bg.jpg' %}" alt="" class="absolute inset-0 h-full w-full object-cover">
+        <div class="absolute inset-0 bg-gradient-to-tr from-slate-950/70 via-slate-950/40 to-indigo-700/40"></div>
+        <div class="relative p-10">
+          <div class="max-w-sm">
+            <div class="text-sm font-semibold text-white/90">Create your account</div>
+            <div class="mt-2 text-3xl font-bold tracking-tight text-white">Register for MEI System</div>
+            <div class="mt-3 text-sm leading-6 text-white/80">
+              Use a valid Gmail address so you can receive reference updates for your requests.
             </div>
+          </div>
         </div>
-    </br>
-        
-        <button type="submit" class="btn btn-secondary">Continue</button>
-    </form>
-    <a href="{% url 'login' %}" class="signup-link">Existing Employee? Login Here.</a>
+      </div>
+
+      <div class="p-6 sm:p-10">
+        <div class="mx-auto w-full max-w-md">
+          <div class="mb-6">
+            <h1 class="text-2xl font-bold tracking-tight text-slate-900">Register</h1>
+            <p class="mt-1 text-sm text-slate-600">Fill in your details to continue.</p>
+          </div>
+
+          {% if form.errors %}
+            <div class="mb-5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-amber-900">
+              <div class="text-sm font-semibold">Please fix the following:</div>
+              <ul class="mt-2 list-disc space-y-1 pl-5 text-sm">
+                {% for field in form %}
+                  {% for error in field.errors %}
+                    <li>{{ error }}</li>
+                  {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                  <li>{{ error }}</li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+
+          <form id="RegisterForm" method="POST" action="" class="space-y-4">
+            {% csrf_token %}
+
+            <div>
+              <label class="block text-sm font-medium text-slate-700">Employee ID</label>
+              <div class="mt-1">{{ form.username }}</div>
+              <div class="mt-1 text-xs text-slate-500">Please enter an ID number consisting of 4 digits.</div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-slate-700">First name</label>
+              <div class="mt-1">{{ form.first_name }}</div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-slate-700">Last name</label>
+              <div class="mt-1">{{ form.last_name }}</div>
+              <div class="mt-1 text-xs text-slate-500">Name only accepts letters.</div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-slate-700">Email</label>
+              <div class="mt-1">{{ form.email }}</div>
+              <ul class="mt-1 list-disc space-y-1 pl-5 text-xs text-slate-500">
+                <li>Please enter an active Gmail address.</li>
+                <li>Please enter an unregistered email address.</li>
+                <li>The email will be used for receiving RTN# reference.</li>
+              </ul>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-slate-700">Password</label>
+              <div class="mt-1">{{ form.password1 }}</div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-slate-700">Confirm password</label>
+              <div class="mt-1">{{ form.password2 }}</div>
+              <ul class="mt-1 list-disc space-y-1 pl-5 text-xs text-slate-500">
+                <li>Password must contain at least 8 characters.</li>
+                <li>Password must not be common.</li>
+                <li>Password must not be entirely numeric.</li>
+              </ul>
+            </div>
+
+            <div class="hidden" id="progressBar" aria-hidden="true">
+              <div class="h-2 w-full overflow-hidden rounded-full bg-slate-200">
+                <div id="progressBarFill" class="h-2 w-0 rounded-full bg-indigo-600 transition-[width] duration-500"></div>
+              </div>
+              <div class="mt-2 text-xs text-slate-500">Creating your account…</div>
+            </div>
+
+            <button
+              type="submit"
+              class="inline-flex w-full items-center justify-center rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-500/20"
+            >
+              Continue
+            </button>
+          </form>
+
+          <div class="mt-6 text-center text-sm text-slate-600">
+            Existing employee?
+            <a href="{% url 'login' %}" class="font-semibold text-indigo-700 hover:text-indigo-800">Login here</a>.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
 
  <!-- Add your JavaScript at the end of the body -->
  <script>
     document.getElementById("RegisterForm").addEventListener("submit", function() {
         // Show the progress bar container
-        document.getElementById("progressBar").style.display = "block";
+        const progressBar = document.getElementById("progressBar");
+        progressBar.classList.remove("hidden");
 
         // Simulate progress
         var progressBarFill = document.getElementById("progressBarFill");
@@ -194,7 +129,6 @@
             } else {
                 width += 30; // Adjust increment speed as needed
                 progressBarFill.style.width = width + "%";
-                progressBarFill.setAttribute("aria-valuenow", width);
             }
         }, 500); // Adjust interval (milliseconds) for smoother or faster animation
     });

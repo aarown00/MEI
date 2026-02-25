@@ -74,46 +74,47 @@
 </style>
 
 
-<div class="container-fluid px-4">
-    <h1 class="mt-4 mb-4">Employee Dashboard</h1>
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <ol class="breadcrumb mb-0">
+<div class="container-fluid mx-auto max-w-7xl px-4 space-y-4">
+    <h1 class="mt-4 text-2xl font-bold tracking-tight text-slate-900">Employee Dashboard</h1>
+    <div class="d-flex justify-content-between align-items-center mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <ol class="breadcrumb mb-0 text-sm text-slate-600">
             <li class="breadcrumb-item active">Please refer to this table to track the progress and approval of your requests.</li>
         </ol>
-        <div>
-            <a href="{% url 'submitrequest' username=request.user.username %}" class="btn btn-primary btn-bc mr-2">
-                <i class="fas fa-plus"></i> Submit Request
+        <div class="flex flex-col gap-2 sm:flex-row">
+            <a href="{% url 'submitrequest' username=request.user.username %}"
+               class="btn btn-primary inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 mr-0 sm:mr-2">
+                <i class="fas fa-plus mr-2"></i> Submit Request
             </a>
-            <a href="{% url 'viewhistory' username=request.user.username %}" class="btn btn-light btn-bc">
-                <i class="fas fa-clock"></i> Check History
+            <a href="{% url 'viewhistory' username=request.user.username %}"
+               class="btn btn-light inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-indigo-500/10">
+                <i class="fas fa-clock mr-2"></i> Check History
             </a>
         </div>
     </div>
 </div>
-    
-</br>
-    <div class="card mb-4">
-        <div class="card-header bg-primary-subtle">
+
+<div class="card mb-4 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <div class="card-header bg-primary-subtle flex items-center gap-2 border-b border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-900">
             <i class="fas fa-table me-1"></i>
-            Your Request Lists
+            <span>Your Request Lists</span>
         </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table id="it-request-table" class="hover" style="width:100%">
-                    <thead>
+        <div class="card-body px-2 py-3 sm:px-4 sm:py-4">
+            <div class="table-responsive overflow-x-auto">
+                <table id="it-request-table" class="min-w-full text-left text-sm hover" style="width:100%">
+                    <thead class="border-b border-slate-200 bg-slate-50 text-xs font-semibold uppercase tracking-wide text-slate-500">
                         <tr>
-                            <th>RTN#</th>    
-                            <th>Requested At</th>
-                            <th>Status</th>
-                            <th>Action</th>
+                            <th scope="col" class="whitespace-nowrap px-3 py-2">RTN#</th>
+                            <th scope="col" class="whitespace-nowrap px-3 py-2">Requested At</th>
+                            <th scope="col" class="whitespace-nowrap px-3 py-2">Status</th>
+                            <th scope="col" class="whitespace-nowrap px-3 py-2">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for it_request in it_requests %}
                             {% if it_request.status == "Waiting" or it_request.status == "Pending" or it_request.status == "Completed" or it_request.status == "Closed_By_Admin" or it_request.status == "Cancelled_By_Admin" %}
-                            <tr>
-                                <td data-label="RTN#">
-                                    <button class="btn btn-link" 
+                            <tr class="hover:bg-slate-50">
+                                <td data-label="RTN#" class="whitespace-nowrap px-3 py-2 align-top">
+                                    <button class="text-sm font-semibold text-indigo-700 hover:text-indigo-900" 
                                         onclick="showAllDetails(
                                             '{{ it_request.id }}',
                                             '{{ it_request.user.first_name }} {{ it_request.user.last_name }}',
@@ -125,30 +126,52 @@
                                             '{{ it_request.description|escapejs }}',
                                             '{% if it_request.upload %}{{ it_request.upload.url }}{% else %}{% endif %}'
                                         )">
-                                        {{ it_request.id }}
+                                        #{{ it_request.id }}
                                     </button>
                                 </td>
                                 
-                                <td data-label="Requested At">{{ it_request.formatted_requested_at }}</td>
-                                <td data-label="Status">
+                                <td data-label="Requested At" class="whitespace-nowrap px-3 py-2 align-top text-sm text-slate-700">
+                                    {{ it_request.formatted_requested_at }}
+                                </td>
+                                <td data-label="Status" class="whitespace-nowrap px-3 py-2 align-top">
                                     {% if it_request.status == 'Waiting' %}
-                                        <button type="button" class="btn btn-secondary btn-status">Waiting</button>
+                                        <span class="inline-flex w-28 items-center justify-center rounded-full bg-slate-200 px-3 py-1 text-xs font-semibold text-slate-800">
+                                            Waiting
+                                        </span>
                                     {% elif it_request.status == 'Pending' %}
-                                        <button type="button" class="btn btn-warning btn-status">Pending</button>
+                                        <span class="inline-flex w-28 items-center justify-center rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-800">
+                                            Pending
+                                        </span>
                                     {% elif it_request.status == 'Closed_By_Admin' or it_request.status == 'Completed' %}
-                                        <button type="button" class="btn btn-success btn-status">Completed</button>
+                                        <span class="inline-flex w-28 items-center justify-center rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-800">
+                                            Completed
+                                        </span>
                                     {% else %}
-                                        <button type="button" class="btn btn-success btn-danger">Cancelled</button>
+                                        <span class="inline-flex w-28 items-center justify-center rounded-full bg-rose-100 px-3 py-1 text-xs font-semibold text-rose-800">
+                                            Cancelled
+                                        </span>
                                     {% endif %}
                                 </td>
                                     
-                                <td data-label="Action"> 
+                                <td data-label="Action" class="whitespace-nowrap px-3 py-2 align-top"> 
                                     {% if it_request.status == 'Waiting' %}
-                                            <button type="button" class="btn btn-outline-danger btn-status1" onclick="confirmCancel({{ it_request.pk }})">Cancel</button>
+                                            <button type="button"
+                                                    class="inline-flex w-32 items-center justify-center rounded-lg border border-rose-600 px-3 py-1.5 text-xs font-semibold text-rose-700 hover:bg-rose-50 focus:outline-none focus:ring-2 focus:ring-rose-500/40"
+                                                    onclick="confirmCancel({{ it_request.pk }})">
+                                                Cancel
+                                            </button>
                                     {% elif it_request.status == 'Cancelled_By_Admin'%}
-                                            <button type="button" class="btn btn-outline-danger btn-status1" onclick="confirmCancelClose({{ it_request.pk }})">Close</button>
+                                            <button type="button"
+                                                    class="inline-flex w-32 items-center justify-center rounded-lg border border-rose-600 px-3 py-1.5 text-xs font-semibold text-rose-700 hover:bg-rose-50 focus:outline-none focus:ring-2 focus:ring-rose-500/40"
+                                                    onclick="confirmCancelClose({{ it_request.pk }})">
+                                                Close
+                                            </button>
                                     {% elif it_request.status == 'Completed' or it_request.status == 'Closed_By_Admin'%}
-                                            <button type="button" class="btn btn-outline-danger btn-status1" onclick="confirmClose({{ it_request.pk }})">Close</button>
+                                            <button type="button"
+                                                    class="inline-flex w-32 items-center justify-center rounded-lg border border-rose-600 px-3 py-1.5 text-xs font-semibold text-rose-700 hover:bg-rose-50 focus:outline-none focus:ring-2 focus:ring-rose-500/40"
+                                                    onclick="confirmClose({{ it_request.pk }})">
+                                                Close
+                                            </button>
                                     {% else %}
                                             None
                                     {% endif %}  

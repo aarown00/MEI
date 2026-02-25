@@ -1,124 +1,56 @@
 {% extends "base.html" %}
+{% load static %}
+
+{% block title %}Dashboard | IT Request System{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/viewreview_admin.css' %}">
+{% endblock %}
 
 {% block content %}
 
-<style>
-
-    .modal-body {
-        white-space: pre-wrap; /* Ensure long text in modal is wrapped */
-        word-wrap: break-word;
-    }
-   
-    .container-fluid {
-        position: relative;
-        padding: 0;
-        z-index: 600; /* Lower than sidebar and overlay */
-           
-
-    }
-    .card {
-        border: none;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-    .card-header {
-        background-color: #f8f9fa;
-        border-bottom: 1px solid #dee2e6;
-        font-weight: bold;
-    }
-    .table {
-        width: 100%;
-        border-collapse: collapse;    
-        margin-top: 100px;
-    }
-    .table th,
-    .table td {
-        padding: 12px;
-        text-align: left;
-        border-bottom: 1px solid #dee2e6;
-    }
-    .table th {
-        background-color: #f8f9fa;
-        font-weight: bold;
-        text-transform: uppercase;
-    }
-    .table tbody tr:hover {
-        background-color: #f1f1f1;
-    }
-    .btn-link {
-        color: #007bff;
-        cursor: pointer;
-    }
-    .no-underline {
-        color: #007bff;
-        text-decoration: none;
-        cursor: pointer;
-    }
-    .btn-status {
-        width: 120px; /* Adjust this value as needed */
-    }
-    
-    .btn-status1 {
-        width: 150px; /* Adjust this value as needed */
-    }
-    
-    .btn-group {
-        width: 150px; /* Adjust this value as needed */
-    }
-
-    .btn-bc {
-        width: 200px; /* Adjust this value as needed */
-    }
-
-
-
-   
-    
-
-
-</style>
-
-
-<div class="container-fluid px-4">
-    <h1 class="mt-4 mb-4">Admin Dashboard</h1>
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <ol class="breadcrumb mb-0">
+<div class="container-fluid mx-auto max-w-7xl px-4 space-y-4">
+    <h1 class="mt-4 text-2xl font-bold tracking-tight text-slate-900">Admin Dashboard</h1>
+    <div class="d-flex justify-content-between align-items-center mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <ol class="breadcrumb mb-0 text-sm text-slate-600">
             <li class="breadcrumb-item active">Please refer to this table to monitor and update employee issued requests.</li>
         </ol>
-        <div>
-            <a href="{% url 'submitrequest' username=request.user.username %}" class="btn btn-primary btn-bc mr-2">
-                <i class="fas fa-plus"></i> Submit Request
+        <div class="flex flex-col gap-2 sm:flex-row">
+            <a href="{% url 'submitrequest' username=request.user.username %}"
+               class="btn btn-primary inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 mr-0 sm:mr-2">
+                <i class="fas fa-plus mr-2"></i> Submit Request
             </a>
-            <a href="{% url 'viewhistory' username=request.user.username %}" class="btn btn-light btn-bc">
-                <i class="fas fa-clock"></i> Check History
+            <a href="{% url 'viewhistory' username=request.user.username %}"
+               class="btn btn-light inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-indigo-500/10">
+                <i class="fas fa-clock mr-2"></i> Check History
             </a>
         </div>
     </div>
 </div>
-    
-</br>
-    <div class="card mb-4">
-        <div class="card-header bg-primary-subtle">
+
+<div class="card mb-4 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <div class="card-header bg-primary-subtle flex items-center gap-2 border-b border-slate-200 bg-slate-50 px-4 py-3 text-sm font-semibold text-slate-900">
             <i class="fas fa-table me-1"></i>
-            All Request Lists
+            <span>All Request Lists</span>
         </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table id="it-request-table" class="hover" style="width:100%">
-                    <thead>
+        <div class="card-body px-2 py-3 sm:px-4 sm:py-4">
+            <div class="table-responsive overflow-x-auto">
+                <table id="it-request-table" class="min-w-full text-left text-sm hover" style="width:100%">
+                    <thead class="border-b border-slate-200 bg-slate-50 text-xs font-semibold uppercase tracking-wide text-slate-500">
                         <tr>
-                            <th>RTN#</th>    
-                            <th>Requested At</th>
-                            <th>Status</th>
-                            <th>Action</th>
+                            <th scope="col" class="whitespace-nowrap px-3 py-2">RTN#</th>
+                            <th scope="col" class="whitespace-nowrap px-3 py-2">Requested At</th>
+                            <th scope="col" class="whitespace-nowrap px-3 py-2">Status</th>
+                            <th scope="col" class="whitespace-nowrap px-3 py-2">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for it_request in it_requests %}
                             {% if it_request.status == "Waiting" or it_request.status == "Pending" or it_request.status == "Completed" %}
-                            <tr>
-                                <td data-label="RTN#">
-                                    <button class="btn btn-link" 
-                                        onclick="showAllDetails(
+                            <tr class="hover:bg-slate-50">
+                                <td data-label="RTN#" class="whitespace-nowrap px-3 py-2 align-top">
+                                    <button class="text-sm font-semibold text-indigo-700 hover:text-indigo-900" 
+                                        onclick="showAdminDetails(
                                             '{{ it_request.id }}',
                                             '{{ it_request.user.first_name }} {{ it_request.user.last_name }}',
                                             '{{ it_request.user.email }}',
@@ -129,28 +61,42 @@
                                             '{{ it_request.description|escapejs }}',
                                             '{% if it_request.upload %}{{ it_request.upload.url }}{% else %}{% endif %}'
                                         )">
-                                        {{ it_request.id }}
+                                        #{{ it_request.id }}
                                     </button>
                                 </td>
                                 
-                                <td data-label="Requested At">{{ it_request.formatted_requested_at }}</td>
-                                <td data-label="Status">
+                                <td data-label="Requested At" class="whitespace-nowrap px-3 py-2 align-top text-sm text-slate-700">
+                                    {{ it_request.formatted_requested_at }}
+                                </td>
+                                <td data-label="Status" class="whitespace-nowrap px-3 py-2 align-top">
                                     {% if it_request.status == 'Waiting' %}
-                                        <button type="button" class="btn btn-secondary btn-status">Waiting</button>
+                                        <span class="inline-flex w-28 items-center justify-center rounded-full bg-slate-200 px-3 py-1 text-xs font-semibold text-slate-800">
+                                            Waiting
+                                        </span>
                                     {% elif it_request.status == 'Pending' %}
-                                        <button type="button" class="btn btn-warning btn-status">Pending</button>
+                                        <span class="inline-flex w-28 items-center justify-center rounded-full bg-amber-100 px-3 py-1 text-xs font-semibold text-amber-800">
+                                            Pending
+                                        </span>
                                     {% else %}
-                                        <button type="button" class="btn btn-success btn-status">Completed</button>
+                                        <span class="inline-flex w-28 items-center justify-center rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-800">
+                                            Completed
+                                        </span>
                                     {% endif %}
                                 </td>
                                     
-                                <td data-label="Action">
+                                <td data-label="Action" class="whitespace-nowrap px-3 py-2 align-top">
                                     
                                     {% if it_request.status == "Waiting" %}
                                         
-                                    <div class="btn-group" role="group" aria-label="Approve or Cancel">
-                                        <button type="button" class="btn btn-outline-primary btn-status1" onclick="confirmApprove({{ it_request.pk }})">Approve</button>
-                                        <button type="button" class="btn btn-outline-danger btn-status1" onclick="confirmCancel({{ it_request.pk }})">
+                                    <div class="btn-group flex flex-col gap-2 sm:flex-row" role="group" aria-label="Approve or Cancel">
+                                        <button type="button"
+                                                class="inline-flex w-32 items-center justify-center rounded-lg border border-indigo-600 px-3 py-1.5 text-xs font-semibold text-indigo-700 hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-indigo-500/40"
+                                                onclick="confirmApprove({{ it_request.pk }})">
+                                            Approve
+                                        </button>
+                                        <button type="button"
+                                                class="inline-flex w-32 items-center justify-center rounded-lg border border-rose-600 px-3 py-1.5 text-xs font-semibold text-rose-700 hover:bg-rose-50 focus:outline-none focus:ring-2 focus:ring-rose-500/40"
+                                                onclick="confirmCancel({{ it_request.pk }})">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x" viewBox="0 0 16 16">
                                             <path d="M7.297 8l-4.13 4.132-.826-.824L6.47 8 2.34 3.824l.826-.824L7.297 7.15l4.132-4.13.824.826L8.124 8l4.13 4.132-.824.826-4.13-4.13-4.132 4.13-.826-.824L7.297 8z"/>
                                         </svg>
@@ -158,10 +104,18 @@
                                     </div>
                                     
                                     {% elif it_request.status == 'Pending'%}
-                                        <button type="button" class="btn btn-outline-primary btn-status1" onclick="confirmDone({{ it_request.pk }})">Done</button>
+                                        <button type="button"
+                                                class="inline-flex w-32 items-center justify-center rounded-lg border border-indigo-600 px-3 py-1.5 text-xs font-semibold text-indigo-700 hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-indigo-500/40"
+                                                onclick="confirmDone({{ it_request.pk }})">
+                                            Done
+                                        </button>
 
                                     {% else %}
-                                        <button type="button" class="btn btn-outline-danger btn-status1" onclick="confirmClose({{ it_request.pk }})">Close</button>
+                                        <button type="button"
+                                                class="inline-flex w-32 items-center justify-center rounded-lg border border-rose-600 px-3 py-1.5 text-xs font-semibold text-rose-700 hover:bg-rose-50 focus:outline-none focus:ring-2 focus:ring-rose-500/40"
+                                                onclick="confirmClose({{ it_request.pk }})">
+                                            Close
+                                        </button>
                                     {% endif %}
 
                                 </td> 
@@ -177,236 +131,218 @@
 </div>
 
 <!-- Combined Details Modal -->
-<div class="modal fade" id="detailsModal" tabindex="-1" aria-labelledby="detailsModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="detailsModalLabel">RTN# </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body" id="detailsModalBody">
-                <h6>Requestor Details</h6>
-                <dl class="row">
-                    <dt class="col-sm-4">Full Name:</dt>
-                    <dd class="col-sm-8" id="requestorFullName"></dd>
+<div
+    id="detailsModal"
+    class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/50 px-4 py-6"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="detailsModalLabel"
+    data-modal-backdrop="true"
+>
+    <div class="relative mx-auto w-full max-w-xl rounded-2xl bg-white shadow-xl">
+        <div class="flex items-center justify-between border-b border-slate-200 px-4 py-3 sm:px-6">
+            <h5 class="text-sm font-semibold text-slate-900" id="detailsModalLabel">RTN#</h5>
+            <button
+                type="button"
+                class="inline-flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/40"
+                data-modal-close="detailsModal"
+                aria-label="Close"
+            >
+                ✕
+            </button>
+        </div>
+        <div class="px-4 py-4 text-sm text-slate-800 sm:px-6 sm:py-5" id="detailsModalBody">
+            <h6 class="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Requestor details</h6>
+            <dl class="grid grid-cols-[auto,1fr] gap-x-3 gap-y-1 text-sm">
+                <dt class="font-medium text-slate-600">Full name</dt>
+                <dd id="requestorFullName"></dd>
 
-                    <dt class="col-sm-4">Email:</dt>
-                    <dd class="col-sm-8" id="requestorEmail"></dd>
+                <dt class="font-medium text-slate-600">Email</dt>
+                <dd id="requestorEmail"></dd>
 
-                    <dt class="col-sm-4">Employee ID:</dt>
-                    <dd class="col-sm-8" id="requestorEmployeeId"></dd>
+                <dt class="font-medium text-slate-600">Employee ID</dt>
+                <dd id="requestorEmployeeId"></dd>
 
-                    <dt class="col-sm-4">Department:</dt>
-                    <dd class="col-sm-8" id="requestorDepartment"></dd>
-                </dl>
-                <h6>Request Details</h6>
-                <dl class="row">
-                    <dt class="col-sm-4">Equipment:</dt>
-                    <dd class="col-sm-8" id="issueEqName"></dd>
+                <dt class="font-medium text-slate-600">Department</dt>
+                <dd id="requestorDepartment"></dd>
+            </dl>
 
-                    <dt class="col-sm-4">Equipment Type:</dt>
-                    <dd class="col-sm-8" id="issueEqType"></dd>
+            <h6 class="mt-4 mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Request details</h6>
+            <dl class="grid grid-cols-[auto,1fr] gap-x-3 gap-y-1 text-sm">
+                <dt class="font-medium text-slate-600">Equipment</dt>
+                <dd id="issueEqName"></dd>
 
-                    <dt class="col-sm-4">Description:</dt>
-                    <dd class="col-sm-8" id="issueDescription"></dd>
+                <dt class="font-medium text-slate-600">Type</dt>
+                <dd id="issueEqType"></dd>
 
-                    <dt class="col-sm-4">Attachment:</dt>
-                    <dd class="col-sm-8" id="issueUpload"></dd>
-                </dl>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            </div>
+                <dt class="font-medium text-slate-600">Description</dt>
+                <dd id="issueDescription" class="whitespace-pre-wrap"></dd>
+
+                <dt class="font-medium text-slate-600">Attachment</dt>
+                <dd id="issueUpload"></dd>
+            </dl>
+        </div>
+        <div class="flex justify-end gap-2 border-t border-slate-200 px-4 py-3 sm:px-6">
+            <button
+                type="button"
+                class="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-1.5 text-xs font-semibold text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500/40"
+                data-modal-close="detailsModal"
+            >
+                Close
+            </button>
         </div>
     </div>
 </div>
 
 <!-- CANCEL MODAL -->
-<div class="modal fade" id="cancelModal" tabindex="-1" role="dialog" aria-labelledby="cancelModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="cancelModalLabel">Confirm Cancellation</h5>
-            </div>
-            <div class="modal-body" style="text-align: center;">
-                <p>Are you sure you want to cancel this request? This request will be moved to history.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-                <button type="button" class="btn btn-danger" id="confirmCancelBtn">Yes</button>
-            </div>
+<div
+    id="cancelModal"
+    class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/50 px-4 py-6"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="cancelModalLabel"
+    data-modal-backdrop="true"
+>
+    <div class="relative mx-auto w-full max-w-md rounded-2xl bg-white shadow-xl">
+        <div class="border-b border-slate-200 px-4 py-3 sm:px-6">
+            <h5 class="text-sm font-semibold text-slate-900" id="cancelModalLabel">Confirm cancellation</h5>
+        </div>
+        <div class="px-4 py-4 text-sm text-slate-800 sm:px-6">
+            <p class="text-center">
+                Are you sure you want to cancel this request? This request will be moved to history.
+            </p>
+        </div>
+        <div class="flex justify-end gap-2 border-t border-slate-200 px-4 py-3 sm:px-6">
+            <button
+                type="button"
+                class="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-1.5 text-xs font-semibold text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500/40"
+                data-modal-close="cancelModal"
+            >
+                No
+            </button>
+            <button
+                type="button"
+                class="inline-flex items-center justify-center rounded-lg bg-rose-600 px-4 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-500/40"
+                id="confirmCancelBtn"
+            >
+                Yes
+            </button>
         </div>
     </div>
 </div>
 
 <!-- APPROVE MODAL -->
-<div class="modal fade" id="approveModal" tabindex="-1" role="dialog" aria-labelledby="approveModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="approveModalLabel">Confirm Approval</h5>
-            </div>
-            <div class="modal-body" style="text-align: center;">
-                <p>Are you sure you want to approve this request? The status will be updated to pending.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-                <button type="button" class="btn btn-primary" id="confirmApproveBtn">Yes</button>
-            </div>
+<div
+    id="approveModal"
+    class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/50 px-4 py-6"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="approveModalLabel"
+    data-modal-backdrop="true"
+>
+    <div class="relative mx-auto w-full max-w-md rounded-2xl bg-white shadow-xl">
+        <div class="border-b border-slate-200 px-4 py-3 sm:px-6">
+            <h5 class="text-sm font-semibold text-slate-900" id="approveModalLabel">Confirm approval</h5>
+        </div>
+        <div class="px-4 py-4 text-sm text-slate-800 sm:px-6">
+            <p class="text-center">
+                Are you sure you want to approve this request? The status will be updated to pending.
+            </p>
+        </div>
+        <div class="flex justify-end gap-2 border-t border-slate-200 px-4 py-3 sm:px-6">
+            <button
+                type="button"
+                class="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-1.5 text-xs font-semibold text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500/40"
+                data-modal-close="approveModal"
+            >
+                No
+            </button>
+            <button
+                type="button"
+                class="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/40"
+                id="confirmApproveBtn"
+            >
+                Yes
+            </button>
         </div>
     </div>
 </div>
 
 <!-- COMPLETE MODAL -->
-<div class="modal fade" id="completeModal" tabindex="-1" role="dialog" aria-labelledby="completeModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="completeModalLabel">Update Request</h5>
-            </div>
-            <div class="modal-body" style="text-align: center;">
-             <p>Mark this request as done?</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-                <button type="button" class="btn btn-primary" id="confirmDoneBtn">Yes</button>
-            </div>
+<div
+    id="completeModal"
+    class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/50 px-4 py-6"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="completeModalLabel"
+    data-modal-backdrop="true"
+>
+    <div class="relative mx-auto w-full max-w-md rounded-2xl bg-white shadow-xl">
+        <div class="border-b border-slate-200 px-4 py-3 sm:px-6">
+            <h5 class="text-sm font-semibold text-slate-900" id="completeModalLabel">Update request</h5>
+        </div>
+        <div class="px-4 py-4 text-sm text-slate-800 sm:px-6">
+            <p class="text-center">Mark this request as done?</p>
+        </div>
+        <div class="flex justify-end gap-2 border-t border-slate-200 px-4 py-3 sm:px-6">
+            <button
+                type="button"
+                class="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-1.5 text-xs font-semibold text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500/40"
+                data-modal-close="completeModal"
+            >
+                No
+            </button>
+            <button
+                type="button"
+                class="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500/40"
+                id="confirmDoneBtn"
+            >
+                Yes
+            </button>
         </div>
     </div>
 </div>
 
 <!-- CLOSE MODAL -->
-<div class="modal fade" id="closeModal" tabindex="-1" role="dialog" aria-labelledby="closeModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="closeModalLabel">Close Request</h5>
-            </div>
-            <div class="modal-body" style="text-align: center;">
-                <p>Are you sure you want to close this request? This request will be moved to history.</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-                <button type="button" class="btn btn-danger" id="confirmCloseBtn">Yes</button>
-            </div>
+<div
+    id="closeModal"
+    class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/50 px-4 py-6"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="closeModalLabel"
+    data-modal-backdrop="true"
+>
+    <div class="relative mx-auto w-full max-w-md rounded-2xl bg-white shadow-xl">
+        <div class="border-b border-slate-200 px-4 py-3 sm:px-6">
+            <h5 class="text-sm font-semibold text-slate-900" id="closeModalLabel">Close request</h5>
+        </div>
+        <div class="px-4 py-4 text-sm text-slate-800 sm:px-6">
+            <p class="text-center">
+                Are you sure you want to close this request? This request will be moved to history.
+            </p>
+        </div>
+        <div class="flex justify-end gap-2 border-t border-slate-200 px-4 py-3 sm:px-6">
+            <button
+                type="button"
+                class="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-1.5 text-xs font-semibold text-slate-700 shadow-sm hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500/40"
+                data-modal-close="closeModal"
+            >
+                No
+            </button>
+            <button
+                type="button"
+                class="inline-flex items-center justify-center rounded-lg bg-rose-600 px-4 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-rose-700 focus:outline-none focus:ring-2 focus:ring-rose-500/40"
+                id="confirmCloseBtn"
+            >
+                Yes
+            </button>
         </div>
     </div>
 </div>
 
 
 
-<script type="text/javascript">
-    var isSuperuser = {{ request.user.is_superuser|yesno:"true,false" }};
-    var csrfToken = '{{ csrf_token }}';
-</script>
-
-<!-- UPDATE MODAL JS -->
-<script>
-    let requestIdToCancel = null;
-    let requestIdToApprove = null;
-    let requestIdToComplete = null;
-    let requestIdToClose = null;
-
-    function confirmCancel(requestId) {
-        requestIdToCancel = requestId;
-        $('#cancelModal').modal('show');
-    }
-
-    function confirmApprove(requestId) {
-        requestIdToApprove = requestId;
-        $('#approveModal').modal('show');
-    }
-
-    function confirmDone(requestId) {
-        requestIdToComplete = requestId;
-        $('#completeModal').modal('show');
-    }
-
-    function confirmClose(requestId) {
-        requestIdToClose = requestId;
-        $('#closeModal').modal('show');
-    }
-
-    document.getElementById('confirmCancelBtn').addEventListener('click', function () {
-        if (requestIdToCancel) {
-            const form = document.createElement('form');
-            form.method = 'POST';
-
-            // Set the form action URL based on user status
-            if (isSuperuser) {
-                form.action = `/it_request/${requestIdToCancel}/cancel/admin/`;
-            } else {
-                form.action = `/it_request/${requestIdToCancel}/cancel/employee/`;
-            }
-
-            const csrfToken = document.createElement('input');
-            csrfToken.type = 'hidden';
-            csrfToken.name = 'csrfmiddlewaretoken';
-            csrfToken.value = '{{ csrf_token }}';  // Ensure you pass the CSRF token here
-
-            form.appendChild(csrfToken);
-            document.body.appendChild(form);
-            form.submit();
-        }
-    });
-
-    document.getElementById('confirmApproveBtn').addEventListener('click', function () {
-        if (requestIdToApprove) {
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = `/it_request/${requestIdToApprove}/approve/`;  // Adjust the URL as needed
-
-            const csrfToken = document.createElement('input');
-            csrfToken.type = 'hidden';
-            csrfToken.name = 'csrfmiddlewaretoken';
-            csrfToken.value = '{{ csrf_token }}';  // Ensure you pass the CSRF token here
-
-            form.appendChild(csrfToken);
-            document.body.appendChild(form);
-            form.submit();
-        }
-    });
-
-    document.getElementById('confirmDoneBtn').addEventListener('click', function () {
-        if (requestIdToComplete) {
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = `/it_request/${requestIdToComplete}/done/`;  // Adjust the URL as needed
-
-            const csrfToken = document.createElement('input');
-            csrfToken.type = 'hidden';
-            csrfToken.name = 'csrfmiddlewaretoken';
-            csrfToken.value = '{{ csrf_token }}';  // Ensure you pass the CSRF token here
-
-            form.appendChild(csrfToken);
-            document.body.appendChild(form);
-            form.submit();
-        }
-    });
-
-
-    document.getElementById('confirmCloseBtn').addEventListener('click', function () {
-        if (requestIdToClose) {
-            const form = document.createElement('form');
-            form.method = 'POST';
-
-             // Set the form action URL based on user status
-             if (isSuperuser) {
-                form.action = `/it_request/${requestIdToClose}/close/admin/`;
-            } else {
-                form.action = `/it_request/${requestIdToClose}/close/employee/`;
-            }
-            const csrfToken = document.createElement('input');
-            csrfToken.type = 'hidden';
-            csrfToken.name = 'csrfmiddlewaretoken';
-            csrfToken.value = '{{ csrf_token }}';  // Ensure you pass the CSRF token here
-
-            form.appendChild(csrfToken);
-            document.body.appendChild(form);
-            form.submit();
-        }
-    });
-</script>
+<script src="{% static 'js/viewreview_admin.js' %}"></script>
 
 
 

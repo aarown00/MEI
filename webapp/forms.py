@@ -80,25 +80,25 @@ class RegisterForm(UserCreationForm):
         if User.objects.filter(email=email).exists():
             raise forms.ValidationError("This email address already exists.")
         
-        # Validate email using Abstract API
-        url = f"https://emailvalidation.abstractapi.com/v1/?api_key={API_KEY}&email={email}"
+        # # Validate email using Abstract API
+        # url = f"https://emailvalidation.abstractapi.com/v1/?api_key={API_KEY}&email={email}"
         
-        try:
-            response = requests.get(url)
-            response.raise_for_status()  # Raise HTTPError for bad responses (e.g., 404, 500)
-            data = response.json()
-            deliverability = data.get("deliverability")
+        # try:
+        #     response = requests.get(url)
+        #     response.raise_for_status()  # Raise HTTPError for bad responses (e.g., 404, 500)
+        #     data = response.json()
+        #     deliverability = data.get("deliverability")
             
-            if deliverability == "UNDELIVERABLE":
-                raise forms.ValidationError("The email address is not active.")
+        #     if deliverability == "UNDELIVERABLE":
+        #         raise forms.ValidationError("The email address is not active.")
         
-        except requests.exceptions.RequestException as e:
-            # Handle any request exceptions (e.g., connection errors, timeouts)
-            raise forms.ValidationError("Failed to validate email address. Please try again later.")
+        # except requests.exceptions.RequestException as e:
+        #     # Handle any request exceptions (e.g., connection errors, timeouts)
+        #     raise forms.ValidationError("Failed to validate email address. Please try again later.")
         
-        except (KeyError, ValueError) as e:
-            # Handle JSON parsing errors or missing data
-            raise forms.ValidationError("Failed to validate email address due to server response.")
+        # except (KeyError, ValueError) as e:
+        #     # Handle JSON parsing errors or missing data
+        #     raise forms.ValidationError("Failed to validate email address due to server response.")
         
         return email
     
